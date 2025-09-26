@@ -1,15 +1,9 @@
-import html
 import math
-import textwrap
-from typing import Iterable, List
-
-import altair as alt
+from typing import List
 import streamlit as st
 
 from app.config import (
-    COHORT_CONFIG,
     DEFAULT_REVEAL_DURATION,
-    DEMO_WALLET,
     TOTAL_SUPPLY,
     resolve_page_icon,
 )
@@ -25,6 +19,7 @@ from app.ui.cohort import render_cohort_selector
 from app.ui.inputs import render_input_panel
 from app.ui.wallet import render_wallet_section
 from app.ui.reveal import run_reveal_presentation
+from app.ui.results import ScenarioSnapshot, render_results
 from app.calculations import (
     build_heatmap_data,
     build_share_table,
@@ -157,6 +152,35 @@ steps_for_reveal = [
     ),
 ]
 
+share_table = build_share_table(
+    share_options,
+    total_supply=total_supply,
+    og_pool_pct=og_pool_pct,
+    fdv_billion=fdv_billion,
+    cohort_size=cohort_size,
+    tier_pct=tier_pct,
+)
+
+heatmap_df = build_heatmap_data(
+    share_options,
+    fdv_sensitivity,
+    total_supply=total_supply,
+    og_pool_pct=og_pool_pct,
+    cohort_size=cohort_size,
+    tier_pct=tier_pct,
+)
+
+scenario_snapshot = ScenarioSnapshot(
+    token_price=token_price,
+    wallets_in_tier=wallets_in_tier,
+    og_pool_tokens=og_pool_tokens,
+    featured_share=featured_share,
+    tier_pct=tier_pct,
+    selected_df=share_table,
+    heatmap_df=heatmap_df,
+    steps=steps_for_reveal,
+)
+
 current_signature = (
     og_pool_pct,
     fdv_billion,
@@ -172,89 +196,16 @@ if clicked:
     st.session_state.last_reveal_signature = current_signature
     st.rerun()
 
-hero_container = st.container()
+if st.session_state.has_revealed_once:
+    last_signature = st.session_state.get("last_reveal_signature")
+    if last_signature is not None and last_signature != current_signature:
+        st.info("Inputs updated — the estimate refreshes instantly.")
 
-def _format_step_detail(text: str) -> str:
-    return html.escape(text)
-
-
-def render_hero() -> None:
-    usd_value = selected_scenario.usd_value
-    sea_amount = selected_scenario.tokens_per_wallet
-
-    with hero_container:
-        hero_html = textwrap.dedent(
-            f"""
-            <div style="background: radial-gradient(circle at top left, #04111d, #0c345d); color: #ffffff; padding: 2.5rem; border-radius: 18px; text-align: center; margin-top: 1.5rem;">
-                <div style="font-size:0.85rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75;">Estimated payout</div>
-                <div style="font-size:3.1rem; font-weight:700; margin:0.65rem 0;">${usd_value:,.0f}</div>
-                <div style="font-size:1.15rem; opacity:0.9;">≈ {sea_amount:,.0f} SEA at ${token_price:,.2f} per token</div>
-                <div style="margin-top:1.1rem; font-size:0.95rem; opacity:0.85;">Featured tier captures {featured_share}% of the OG pool.</div>
-            </div>
-            """
-        )
-        st.markdown(hero_html, unsafe_allow_html=True)
-
-        insights = [
-            (
-                "Token price",
-                f"${token_price:,.2f}",
-                "Per SEA",
-            ),
-            (
-                "OG pool",
-                f"{og_pool_tokens:,.0f} SEA",
-                "Allocated to OG cohort",
-            ),
-            (
-                "Wallets in tier",
-                f"{wallets_in_tier:,}",
-                f"{format_percentile_option(tier_pct)} band",
-            ),
-        ]
-        insight_cards_html = "\n".join(
-            textwrap.dedent(
-                f"""
-                <div class='insight-card'>
-                    <h4>{html.escape(label)}</h4>
-                    <div class='value'>{html.escape(value)}</div>
-                    <div class='hint'>{html.escape(hint)}</div>
-                </div>
-                """
-            ).strip()
-            for label, value, hint in insights
-        )
-        st.markdown(
-            f"<div class='insight-grid'>{insight_cards_html}</div>",
-            unsafe_allow_html=True,
-        )
-
-        steps_html = "\n".join(
-            textwrap.dedent(
-                f"""
-                <li class='stepper-item'>
-                    <div class='stepper-index'>{idx}</div>
-                    <div class='stepper-content'>
-                        <div class='title'>{html.escape(title)}</div>
-                        <div class='detail'>{_format_step_detail(detail)}</div>
-                    </div>
-                </li>
-                """
-            ).strip()
-            for idx, (title, detail) in enumerate(steps_for_reveal, start=1)
-        )
-        stepper_html = textwrap.dedent(
-            f"""
-            <div class='stepper'>
-                <h4>How we got here</h4>
-                <ul class='stepper-list'>
-                    {steps_html}
-                </ul>
-            </div>
-            """
-        )
-        st.markdown(stepper_html, unsafe_allow_html=True)
-
+    render_results(
+        scenario_snapshot=scenario_snapshot,
+        selected_scenario=selected_scenario,
+        reveal_signature=current_signature,
+    )
 
 if st.session_state.has_revealed_once:
     inputs_changed = False
