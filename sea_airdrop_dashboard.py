@@ -30,16 +30,19 @@ COHORT_CONFIG: Dict[str, Dict[str, Any]] = {
         "slug": "super_og",
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2022.json",
         "description": "First trade on or before 31 Dec 2021",
+        "timeline_label": "≤2021",
     },
     "Uncle (≤2022)": {
         "slug": "unc",
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2023.json",
         "description": "First trade on or before 31 Dec 2022",
+        "timeline_label": "≤2022",
     },
     "Cousin (≤2023)": {
         "slug": "cuz",
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2024.json",
         "description": "First trade on or before 31 Dec 2023",
+        "timeline_label": "≤2023",
     },
 }
 
@@ -478,6 +481,43 @@ div[data-testid="stButton"] button[kind="primary"] {
         color: #1d4ed8 !important;
         font-weight: 600 !important;
     }
+    .cohort-timeline {
+        margin: 1.4rem auto 0.4rem auto;
+        max-width: 760px;
+    }
+    .cohort-timeline div[data-testid="stRadio"] > div {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    .cohort-timeline div[data-testid="stRadio"] label {
+        position: relative;
+        padding: 0.6rem 1.3rem;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.18);
+        color: #1f2937;
+        font-weight: 600;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        transition: all 0.2s ease;
+    }
+    .cohort-timeline div[data-testid="stRadio"] label:hover {
+        border-color: rgba(59, 130, 246, 0.45);
+        color: #1d4ed8;
+    }
+    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div p {
+        color: #0f172a;
+    }
+    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
+        color: #0f172a;
+        font-weight: 700;
+    }
+    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(29, 78, 216, 0.25));
+        z-index: -1;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -492,11 +532,30 @@ default_cohort = (
 if default_cohort not in cohort_names:
     default_cohort = cohort_names[0]
 
-cohort_selection = st.radio(
-    "Choose OG cohort definition",
-    cohort_names,
-    index=cohort_names.index(default_cohort),
-)
+cohort_selection = st.session_state.get("cohort_selection", default_cohort)
+if cohort_selection not in cohort_names:
+    cohort_selection = default_cohort
+
+previous_selection = st.session_state.get("cohort_selection_prev")
+
+timeline_container = st.container()
+with timeline_container:
+    st.markdown("**OG cohort timeline**")
+    st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
+    timeline_labels = [COHORT_CONFIG[name]["timeline_label"] for name in cohort_names]
+    label_to_option = dict(zip(timeline_labels, cohort_names))
+    current_label = COHORT_CONFIG[cohort_selection]["timeline_label"]
+    timeline_choice_label = st.radio(
+        "OG cohort timeline",
+        options=timeline_labels,
+        index=timeline_labels.index(current_label),
+        horizontal=True,
+        label_visibility="collapsed",
+        key="cohort_timeline",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+    cohort_selection = label_to_option[timeline_choice_label]
+
 st.session_state["cohort_selection"] = cohort_selection
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
 distribution_rows = load_distribution(selected_cohort_conf["path"])
@@ -510,13 +569,11 @@ if not distribution_rows:
         f"Expected at {selected_cohort_conf['path']}"
     )
 
-previous_selection = st.session_state.get("cohort_selection_prev")
-st.session_state["cohort_selection_prev"] = cohort_selection
-
 if distribution_rows:
-    st.session_state["cohort_size_estimate"] = estimate_og_cohort_size(distribution_rows)
-
-cohort_estimate = st.session_state.get("cohort_size_estimate")
+    cohort_estimate = estimate_og_cohort_size(distribution_rows)
+    st.session_state["cohort_size_estimate"] = cohort_estimate
+else:
+    cohort_estimate = st.session_state.get("cohort_size_estimate")
 
 slider_min = 50_000
 slider_mid = 100_000
@@ -560,6 +617,8 @@ if (
             percentile_options,
         )
         st.session_state["tier_pct"] = snapped_percentile
+
+st.session_state["cohort_selection_prev"] = cohort_selection
 
 wallet_holder = st.container()
 
