@@ -24,6 +24,7 @@ DEMO_WALLET = os.getenv("DEMO_WALLET", "")
 
 SHARE_SERVICE_URL = os.getenv("SHARE_SERVICE_URL", "http://127.0.0.1:4076")
 SHARE_PUBLIC_BASE = os.getenv("SHARE_PUBLIC_BASE") or os.getenv("BASE_URL", "")
+APP_PUBLIC_BASE = os.getenv("APP_PUBLIC_BASE") or SHARE_PUBLIC_BASE
 
 # App-wide constants --------------------------------------------------------
 TOTAL_SUPPLY = 1_000_000_000
