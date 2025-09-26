@@ -552,7 +552,10 @@ with timeline_container:
     st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
     timeline_labels = [COHORT_CONFIG[name]["timeline_label"] for name in cohort_names]
     label_to_option = dict(zip(timeline_labels, cohort_names))
-    current_label = COHORT_CONFIG[cohort_selection]["timeline_label"]
+    current_label = st.session_state.get(
+        "cohort_timeline",
+        COHORT_CONFIG[cohort_selection]["timeline_label"],
+    )
     timeline_choice_label = st.radio(
         "OG cohort timeline",
         options=timeline_labels,
