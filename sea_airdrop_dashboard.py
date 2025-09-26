@@ -66,9 +66,14 @@ if "og_pool_pct" not in st.session_state:
 if "fdv_billion" not in st.session_state:
     st.session_state["fdv_billion"] = 4
 
-params = st.experimental_get_query_params()
-if "cohort" in params:
-    slug_param = params["cohort"][0]
+params = st.query_params
+slug_values = params.get("cohort")
+if isinstance(slug_values, (list, tuple)):
+    slug_param = slug_values[0] if slug_values else None
+else:
+    slug_param = slug_values
+
+if slug_param:
     for display_name, config in COHORT_CONFIG.items():
         if config["slug"] == slug_param:
             st.session_state["cohort_selection"] = display_name
@@ -629,7 +634,12 @@ with timeline_container:
 
 st.session_state["cohort_selection"] = cohort_selection
 st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
-st.experimental_set_query_params(cohort=COHORT_CONFIG[cohort_selection]["slug"])
+current_slug = COHORT_CONFIG[cohort_selection]["slug"]
+existing_slug = params.get("cohort")
+if isinstance(existing_slug, (list, tuple)):
+    existing_slug = existing_slug[0] if existing_slug else None
+if existing_slug != current_slug:
+    st.query_params["cohort"] = current_slug
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
 distribution_rows = cohort_distributions.get(cohort_selection, [])
 
