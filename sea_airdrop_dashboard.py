@@ -492,6 +492,18 @@ div[data-testid="stButton"] button[kind="primary"] {
     .cohort-timeline {
         margin: 1.4rem auto 0.4rem auto;
         max-width: 760px;
+        position: relative;
+        padding: 1.2rem 0 0.5rem 0;
+    }
+    .cohort-timeline::before {
+        content: "";
+        position: absolute;
+        top: 32px;
+        left: 6%;
+        right: 6%;
+        height: 3px;
+        background: linear-gradient(90deg, rgba(32, 129, 226, 0.18), rgba(12, 52, 93, 0.18));
+        z-index: 0;
     }
     .cohort-timeline div[data-testid="stRadio"] > div {
         justify-content: center;
@@ -499,13 +511,14 @@ div[data-testid="stButton"] button[kind="primary"] {
     }
     .cohort-timeline div[data-testid="stRadio"] label {
         position: relative;
-        padding: 0.6rem 1.3rem;
+        padding: 0.4rem 1.3rem 0.9rem 1.3rem;
         border-radius: 999px;
         background: rgba(148, 163, 184, 0.18);
         color: #04111d;
         font-weight: 600;
         border: 1px solid rgba(148, 163, 184, 0.4);
         transition: all 0.2s ease;
+        z-index: 1;
     }
     .cohort-timeline div[data-testid="stRadio"] label:hover {
         border-color: rgba(32, 129, 226, 0.45);
@@ -525,6 +538,15 @@ div[data-testid="stButton"] button[kind="primary"] {
         border-radius: 999px;
         background: linear-gradient(135deg, rgba(32, 129, 226, 0.25), rgba(12, 52, 93, 0.25));
         z-index: -1;
+    }
+    .cohort-description {
+        font-size: 0.95rem;
+        color: #353840;
+        background: rgba(226, 230, 239, 0.45);
+        border: 1px solid rgba(226, 230, 239, 0.9);
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        margin-top: 0.4rem;
     }
     </style>
     """,
@@ -548,31 +570,36 @@ previous_selection = st.session_state.get("cohort_selection_prev")
 
 timeline_container = st.container()
 with timeline_container:
-    st.markdown("**OG cohort timeline**")
-    st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
     timeline_labels = [COHORT_CONFIG[name]["timeline_label"] for name in cohort_names]
     label_to_option = dict(zip(timeline_labels, cohort_names))
     current_label = st.session_state.get(
         "cohort_timeline",
         COHORT_CONFIG[cohort_selection]["timeline_label"],
     )
-    timeline_choice_label = st.radio(
-        "OG cohort timeline",
-        options=timeline_labels,
-        index=timeline_labels.index(current_label),
-        horizontal=True,
-        label_visibility="collapsed",
-        key="cohort_timeline",
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    current_conf = COHORT_CONFIG[label_to_option[current_label]]
+    chooser_col, desc_col = st.columns([3, 2.2], gap="large")
+    with chooser_col:
+        st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
+        timeline_choice_label = st.radio(
+            "OG cohort timeline",
+            options=timeline_labels,
+            index=timeline_labels.index(current_label),
+            horizontal=True,
+            label_visibility="collapsed",
+            key="cohort_timeline",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+    with desc_col:
+        if current_conf.get("description"):
+            st.markdown(
+                f"<div class='cohort-description'>{current_conf['description']}</div>",
+                unsafe_allow_html=True,
+            )
     cohort_selection = label_to_option[timeline_choice_label]
 
 st.session_state["cohort_selection"] = cohort_selection
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
 distribution_rows = load_distribution(selected_cohort_conf["path"])
-
-if description := selected_cohort_conf.get("description"):
-    st.caption(description)
 
 if not distribution_rows:
     st.warning(
