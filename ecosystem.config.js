@@ -1,12 +1,12 @@
 const path = require('path');
 
-const ROOT_DIR = path.resolve(__dirname, '..');
+const ROOT_DIR = __dirname;
 const SHARE_PORT = process.env.SHARE_SERVICE_PORT || '4076';
 
 module.exports = {
   apps: [
     {
-      name: 'opensea',
+      name: 'sea-mom',
       cwd: ROOT_DIR,
       script: path.join(ROOT_DIR, '.venv', 'bin', 'python'),
       args: '-m streamlit run sea_airdrop_dashboard.py --server.address 0.0.0.0 --server.port 4075',
