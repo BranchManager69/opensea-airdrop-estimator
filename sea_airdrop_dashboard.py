@@ -1,5 +1,4 @@
 import math
-from typing import List
 import streamlit as st
 
 from app.config import (
@@ -206,17 +205,3 @@ if st.session_state.has_revealed_once:
         selected_scenario=selected_scenario,
         reveal_signature=current_signature,
     )
-
-if st.session_state.has_revealed_once:
-    inputs_changed = False
-    if (
-        st.session_state.last_reveal_signature is not None
-        and st.session_state.last_reveal_signature != current_signature
-    ):
-        inputs_changed = True
-        st.session_state.last_reveal_signature = current_signature
-
-    if inputs_changed:
-        st.info("Inputs updated — the estimate refreshes instantly.")
-
-    render_hero()
