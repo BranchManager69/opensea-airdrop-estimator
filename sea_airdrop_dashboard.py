@@ -65,6 +65,10 @@ if "og_pool_pct" not in st.session_state:
     st.session_state["og_pool_pct"] = 15
 if "fdv_billion" not in st.session_state:
     st.session_state["fdv_billion"] = 4
+if "has_revealed_once" not in st.session_state:
+    st.session_state.has_revealed_once = False
+if "last_reveal_signature" not in st.session_state:
+    st.session_state.last_reveal_signature = None
 
 params = st.query_params
 slug_values = params.get("cohort")
@@ -999,11 +1003,6 @@ current_signature = (
     tuple(share_options),
     tuple(fdv_sensitivity),
 )
-
-if "has_revealed_once" not in st.session_state:
-    st.session_state.has_revealed_once = False
-if "last_reveal_signature" not in st.session_state:
-    st.session_state.last_reveal_signature = None
 
 hero_container = st.container()
 
