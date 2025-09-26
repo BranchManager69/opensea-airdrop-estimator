@@ -83,6 +83,12 @@ def render_wallet_section(
         fetch_cols = st.columns([1, 3])
         with fetch_cols[0]:
             fetch_clicked = st.button("Fetch history", type="secondary")
+        with fetch_cols[1]:
+            share_clicked = st.button(
+                "Copy share link",
+                type="primary",
+                disabled=not wallet_address.strip(),
+            )
 
         if fetch_clicked:
             if not wallet_address:
@@ -91,11 +97,31 @@ def render_wallet_section(
                 perform_fetch(wallet_address)
                 st.session_state["_autofetched_wallet"] = wallet_address.lower()
 
+        if share_clicked:
+            normalized = wallet_address.strip()
+            if not normalized:
+                st.warning("Enter a wallet address before copying a share link.")
+            else:
+                base_url = st.secrets.get("BASE_URL", "").rstrip("/")
+                share_url = f"{base_url}/?wallet={normalized}" if base_url else f"/?wallet={normalized}"
+                st.session_state["_share_url"] = share_url
+                escaped = share_url.replace("'", "\'")
+                st.markdown(
+                    f"<script>navigator.clipboard.writeText('{escaped}');</script>",
+                    unsafe_allow_html=True,
+                )
+                st.toast("Share link copied to clipboard.")
+                st.query_params["wallet"] = normalized
+
     if auto_fetch and preset_wallet:
         normalized = preset_wallet.lower()
         if st.session_state.get("_autofetched_wallet") != normalized:
             perform_fetch(preset_wallet)
             st.session_state["_autofetched_wallet"] = normalized
+
+    share_url_value = st.session_state.get("_share_url")
+    if share_url_value:
+        st.caption(f"Share URL ready: {share_url_value}")
 
     wallet_report = st.session_state.get("wallet_report")
     wallet_band = st.session_state.get("wallet_band")
