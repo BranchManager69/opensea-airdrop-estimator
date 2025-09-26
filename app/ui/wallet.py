@@ -9,7 +9,8 @@ import requests
 import streamlit as st
 
 from app.calculations import determine_percentile_band
-from app.config import DEMO_WALLET
+from app.config import DEMO_WALLET, SHARE_PUBLIC_BASE
+from streamlit.errors import StreamlitSecretNotFoundError
 from app.data_sources import estimate_og_cohort_size, fetch_wallet_report
 
 
@@ -102,7 +103,11 @@ def render_wallet_section(
             if not normalized:
                 st.warning("Enter a wallet address before copying a share link.")
             else:
-                base_url = st.secrets.get("BASE_URL", "").rstrip("/")
+                try:
+                    base_url_secret = st.secrets.get("BASE_URL", "")  # type: ignore[attr-defined]
+                except (StreamlitSecretNotFoundError, AttributeError):
+                    base_url_secret = ""
+                base_url = (base_url_secret or SHARE_PUBLIC_BASE or "").rstrip("/")
                 share_url = f"{base_url}/?wallet={normalized}" if base_url else f"/?wallet={normalized}"
                 st.session_state["_share_url"] = share_url
                 escaped = share_url.replace("'", "\'")
