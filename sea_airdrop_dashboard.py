@@ -805,29 +805,29 @@ if wallet_report and wallet_report.get("summary"):
             "adjust your definition to include lower-volume wallets."
         )
 
-    cohort_estimate = st.session_state.get("cohort_size_estimate")
-    if cohort_estimate:
-        st.caption(
-            f"{cohort_selection}: approximately {cohort_estimate:,} wallets qualify under this definition. "
-            "Use the cohort size slider below to focus on your own OG definition."
-        )
-
-clicked = False
-cta_spacers = st.columns([2, 1, 2])
-with cta_spacers[1]:
-    clicked = st.button(
-        "Estimate my airdrop",
-        key="estimate_cta",
-        type="primary",
-        use_container_width=True,
-        disabled=st.session_state.has_revealed_once,
+cohort_estimate = st.session_state.get("cohort_size_estimate")
+if cohort_estimate:
+    st.caption(
+        f"{cohort_selection}: approximately {cohort_estimate:,} wallets qualify under this definition. "
+        "Use the cohort size slider below to focus on your own OG definition."
     )
 
-if clicked:
-    run_reveal_presentation(steps_for_reveal, reveal_duration)
-    st.session_state.has_revealed_once = True
-    st.session_state.last_reveal_signature = current_signature
-    st.rerun()
+cta_col = st.container()
+with cta_col:
+    left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
+    with button_area:
+        clicked = st.button(
+            "Estimate my airdrop",
+            key="estimate_cta",
+            type="primary",
+            use_container_width=True,
+            disabled=st.session_state.has_revealed_once,
+        )
+    if clicked:
+        run_reveal_presentation(steps_for_reveal, reveal_duration)
+        st.session_state.has_revealed_once = True
+        st.session_state.last_reveal_signature = current_signature
+        st.rerun()
 
 total_supply = TOTAL_SUPPLY
 
