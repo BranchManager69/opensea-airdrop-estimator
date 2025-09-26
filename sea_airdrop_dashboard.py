@@ -812,7 +812,22 @@ if wallet_report and wallet_report.get("summary"):
             "Use the cohort size slider below to focus on your own OG definition."
         )
 
-cta_col = st.container()
+clicked = False
+cta_spacers = st.columns([2, 1, 2])
+with cta_spacers[1]:
+    clicked = st.button(
+        "Estimate my airdrop",
+        key="estimate_cta",
+        type="primary",
+        use_container_width=True,
+        disabled=st.session_state.has_revealed_once,
+    )
+
+if clicked:
+    run_reveal_presentation(steps_for_reveal, reveal_duration)
+    st.session_state.has_revealed_once = True
+    st.session_state.last_reveal_signature = current_signature
+    st.rerun()
 
 total_supply = TOTAL_SUPPLY
 
@@ -1063,22 +1078,6 @@ def render_hero() -> None:
         )
         st.markdown(stepper_html, unsafe_allow_html=True)
 
-
-with cta_col:
-    left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
-    with button_area:
-        clicked = st.button(
-            "Estimate my airdrop",
-            key="estimate_cta",
-            type="primary",
-            use_container_width=True,
-            disabled=st.session_state.has_revealed_once,
-        )
-    if clicked:
-        run_reveal_presentation(steps_for_reveal, reveal_duration)
-        st.session_state.has_revealed_once = True
-        st.session_state.last_reveal_signature = current_signature
-        st.rerun()
 
 if st.session_state.has_revealed_once:
     inputs_changed = False
