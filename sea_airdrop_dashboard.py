@@ -32,18 +32,24 @@ COHORT_CONFIG: Dict[str, Dict[str, Any]] = {
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2022.json",
         "description": "First trade on or before 31 Dec 2021",
         "timeline_label": "≤2021",
+        "title": "Super OG",
+        "tagline": "Pre-2022 traders",
     },
     "Uncle (≤2022)": {
         "slug": "unc",
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2023.json",
         "description": "First trade on or before 31 Dec 2022",
         "timeline_label": "≤2022",
+        "title": "Uncle",
+        "tagline": "First active in 2022",
     },
     "Cousin (≤2023)": {
         "slug": "cuz",
         "path": DATA_DIR / "opensea_og_percentile_distribution_pre2024.json",
         "description": "First trade on or before 31 Dec 2023",
         "timeline_label": "≤2023",
+        "title": "Cousin",
+        "tagline": "Joined by 2023",
     },
 }
 
@@ -498,46 +504,70 @@ div[data-testid="stButton"] button[kind="primary"] {
     .cohort-timeline::before {
         content: "";
         position: absolute;
-        top: 32px;
-        left: 6%;
-        right: 6%;
-        height: 3px;
-        background: linear-gradient(90deg, rgba(32, 129, 226, 0.18), rgba(12, 52, 93, 0.18));
+        top: 64px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(32, 129, 226, 0.22), rgba(12, 52, 93, 0.22));
         z-index: 0;
     }
     .cohort-timeline div[data-testid="stRadio"] > div {
         justify-content: center;
-        gap: 1.5rem;
+        gap: 1.4rem;
     }
     .cohort-timeline div[data-testid="stRadio"] label {
         position: relative;
-        padding: 0.4rem 1.3rem 0.9rem 1.3rem;
-        border-radius: 999px;
-        background: rgba(148, 163, 184, 0.18);
-        color: #04111d;
-        font-weight: 600;
-        border: 1px solid rgba(148, 163, 184, 0.4);
-        transition: all 0.2s ease;
+        padding: 0;
+        border: none;
+        background: transparent;
         z-index: 1;
     }
-    .cohort-timeline div[data-testid="stRadio"] label:hover {
-        border-color: rgba(32, 129, 226, 0.45);
-        color: #2081E2;
+    .cohort-card {
+        min-width: 200px;
+        border-radius: 16px;
+        border: 1px solid rgba(226, 230, 239, 0.8);
+        background: rgba(255, 255, 255, 0.96);
+        padding: 1rem 1.2rem;
+        box-shadow: 0 10px 20px rgba(4, 17, 29, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        text-align: center;
     }
-    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div p {
-        color: #04111d;
-    }
-    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
-        color: #04111d;
+    .cohort-card-title {
         font-weight: 700;
+        font-size: 1.05rem;
+        color: #04111d;
+        letter-spacing: 0.02em;
     }
-    .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div::before {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, rgba(32, 129, 226, 0.25), rgba(12, 52, 93, 0.25));
-        z-index: -1;
+    .cohort-card-year {
+        font-size: 0.9rem;
+        color: #1868B7;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .cohort-card-metric {
+        font-size: 0.95rem;
+        color: #353840;
+    }
+    .cohort-timeline label[data-baseweb="radio"]:hover .cohort-card {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 32px rgba(4, 17, 29, 0.16);
+        border-color: rgba(32, 129, 226, 0.35);
+    }
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card {
+        background: linear-gradient(135deg, rgba(32, 129, 226, 0.95), rgba(12, 52, 93, 0.95));
+        border-color: rgba(32, 129, 226, 0.7);
+        box-shadow: 0 22px 40px rgba(32, 129, 226, 0.35);
+    }
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-title,
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-metric {
+        color: #f8fafc;
+    }
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-year {
+        color: #d4e7f9;
     }
     .cohort-description {
         font-size: 0.95rem;
@@ -568,6 +598,13 @@ if cohort_selection not in cohort_names:
 
 previous_selection = st.session_state.get("cohort_selection_prev")
 
+cohort_distributions: Dict[str, List[Dict[str, Any]]] = {}
+cohort_totals: Dict[str, int] = {}
+for name in cohort_names:
+    rows = load_distribution(COHORT_CONFIG[name]["path"])
+    cohort_distributions[name] = rows
+    cohort_totals[name] = estimate_og_cohort_size(rows)
+
 timeline_container = st.container()
 with timeline_container:
     timeline_labels = [COHORT_CONFIG[name]["timeline_label"] for name in cohort_names]
@@ -580,13 +617,31 @@ with timeline_container:
     chooser_col, desc_col = st.columns([3, 2.2], gap="large")
     with chooser_col:
         st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
-        timeline_choice_label = st.radio(
+
+        option_indices = list(range(len(cohort_names)))
+
+        def _format_option(idx: int) -> str:
+            name = cohort_names[idx]
+            conf = COHORT_CONFIG[name]
+            total = cohort_totals.get(name, 0)
+            total_text = f"{total:,} wallets" if total else "Loading…"
+            return (
+                "<div class='cohort-card'>"
+                f"<div class='cohort-card-title'>{conf['title']}</div>"
+                f"<div class='cohort-card-year'>{conf['timeline_label']} · {conf['tagline']}</div>"
+                f"<div class='cohort-card-metric'>{total_text}</div>"
+                "</div>"
+            )
+
+        current_idx = cohort_names.index(cohort_selection)
+        timeline_choice_idx = st.radio(
             "OG cohort timeline",
-            options=timeline_labels,
-            index=timeline_labels.index(current_label),
+            options=option_indices,
+            index=current_idx,
             horizontal=True,
             label_visibility="collapsed",
-            key="cohort_timeline",
+            key="cohort_timeline_index",
+            format_func=_format_option,
         )
         st.markdown("</div>", unsafe_allow_html=True)
     with desc_col:
@@ -595,11 +650,12 @@ with timeline_container:
                 f"<div class='cohort-description'>{current_conf['description']}</div>",
                 unsafe_allow_html=True,
             )
-    cohort_selection = label_to_option[timeline_choice_label]
+    cohort_selection = cohort_names[timeline_choice_idx]
 
 st.session_state["cohort_selection"] = cohort_selection
+st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
-distribution_rows = load_distribution(selected_cohort_conf["path"])
+distribution_rows = cohort_distributions.get(cohort_selection, [])
 
 if not distribution_rows:
     st.warning(
@@ -608,7 +664,7 @@ if not distribution_rows:
     )
 
 if distribution_rows:
-    cohort_estimate = estimate_og_cohort_size(distribution_rows)
+    cohort_estimate = cohort_totals.get(cohort_selection, 0)
     st.session_state["cohort_size_estimate"] = cohort_estimate
 else:
     cohort_estimate = st.session_state.get("cohort_size_estimate")
