@@ -159,6 +159,13 @@ def render_wallet_section(
         metric_cols[2].metric("Platform fees", f"{summary.get('platform_fee_eth', 0):,.2f} ETH")
         metric_cols[3].metric("Royalties", f"{summary.get('royalty_fee_eth', 0):,.2f} ETH")
 
+        total_eth = float(summary.get("total_eth") or 0.0)
+        total_usd = float(summary.get("total_usd") or 0.0)
+        platform_fee_eth = float(summary.get("platform_fee_eth") or 0.0)
+        royalty_fee_eth = float(summary.get("royalty_fee_eth") or 0.0)
+        platform_fee_usd = float(summary.get("platform_fee_usd") or 0.0)
+        royalty_fee_usd = float(summary.get("royalty_fee_usd") or 0.0)
+
         if wallet_band:
             cohort_selected = st.session_state.get("cohort_size", 100_000)
             start_pct = wallet_band.get("start_percentile", 0.0)
@@ -180,5 +187,94 @@ def render_wallet_section(
                 "Wallet volume falls below your current OG cohort selection. Increase the cohort size or "
                 "adjust your definition to include lower-volume wallets."
             )
+
+        fee_rows = []
+        if platform_fee_eth or platform_fee_usd:
+            fee_rows.append(
+                {
+                    "Type": "Platform",
+                    "ETH": platform_fee_eth,
+                    "USD": platform_fee_usd,
+                    "ETH %": (platform_fee_eth / total_eth * 100) if total_eth else 0.0,
+                    "USD %": (platform_fee_usd / total_usd * 100) if total_usd else 0.0,
+                }
+            )
+        if royalty_fee_eth or royalty_fee_usd:
+            fee_rows.append(
+                {
+                    "Type": "Royalties",
+                    "ETH": royalty_fee_eth,
+                    "USD": royalty_fee_usd,
+                    "ETH %": (royalty_fee_eth / total_eth * 100) if total_eth else 0.0,
+                    "USD %": (royalty_fee_usd / total_usd * 100) if total_usd else 0.0,
+                }
+            )
+
+        net_eth = max(total_eth - platform_fee_eth - royalty_fee_eth, 0.0)
+        net_usd = max(total_usd - platform_fee_usd - royalty_fee_usd, 0.0)
+        if total_eth or total_usd:
+            fee_rows.append(
+                {
+                    "Type": "Net to trader",
+                    "ETH": net_eth,
+                    "USD": net_usd,
+                    "ETH %": (net_eth / total_eth * 100) if total_eth else 0.0,
+                    "USD %": (net_usd / total_usd * 100) if total_usd else 0.0,
+                }
+            )
+
+        if fee_rows:
+            fee_df = pd.DataFrame(fee_rows)
+            for column, places in [("ETH", 3), ("USD", 2), ("ETH %", 2), ("USD %", 2)]:
+                fee_df[column] = fee_df[column].round(places)
+            fee_df.rename(columns={"ETH": "ETH", "USD": "USD", "ETH %": "% of ETH", "USD %": "% of USD"}, inplace=True)
+
+            formatted_fee_df = fee_df.copy()
+            formatted_fee_df["ETH"] = formatted_fee_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
+            formatted_fee_df["USD"] = formatted_fee_df["USD"].map(lambda v: f"${v:,.2f}")
+            formatted_fee_df["% of ETH"] = formatted_fee_df["% of ETH"].map(lambda v: f"{v:,.2f}%")
+            formatted_fee_df["% of USD"] = formatted_fee_df["% of USD"].map(lambda v: f"{v:,.2f}%")
+
+            st.markdown("**Fee profile**")
+            st.dataframe(
+                formatted_fee_df,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+        collection_rows = wallet_report.get("collections") or []
+        if collection_rows:
+            collections_df = pd.DataFrame(collection_rows)
+            if not collections_df.empty:
+                collections_df = collections_df.copy()
+                collections_df["total_usd"] = collections_df["total_usd"].astype(float)
+                collections_df["total_eth"] = collections_df["total_eth"].astype(float)
+                collections_df.sort_values("total_usd", ascending=False, inplace=True)
+                if total_usd:
+                    collections_df["share_usd_pct"] = (collections_df["total_usd"] / total_usd * 100).round(2)
+                else:
+                    collections_df["share_usd_pct"] = 0.0
+
+                collections_df = collections_df.rename(
+                    columns={
+                        "collection": "Collection",
+                        "trade_count": "Trades",
+                        "total_eth": "ETH",
+                        "total_usd": "USD",
+                        "share_usd_pct": "% of USD",
+                    }
+                )
+
+                display_df = collections_df[["Collection", "Trades", "ETH", "USD", "% of USD"]].copy()
+                display_df["ETH"] = display_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
+                display_df["USD"] = display_df["USD"].map(lambda v: f"${v:,.2f}")
+                display_df["% of USD"] = display_df["% of USD"].map(lambda v: f"{v:,.2f}%")
+
+                st.markdown("**Collection mix**")
+                st.dataframe(
+                    display_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
     return wallet_report, wallet_band
