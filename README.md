@@ -8,6 +8,7 @@ Interactive Streamlit app for modelling OpenSea's SEA airdrop using real on-chai
 - **Cohort selector** – toggle between pre‑2022, pre‑2023, and pre‑2024 OG definitions. Percentile math respects whichever cohort size you pick.
 - **Slider levers** – adjust OG pool %, launch FDV, cohort size, and your percentile band. Defaults auto-tune based on fetched wallet stats.
 - **Reveal flow** – animated breakdown of token price, pool allocation, tier sizing, and payout. Shows "historic vs now" insight placeholders for future extensions.
+- **Sea Mom Flex cards** – companion service renders branded share images so users can flex their estimate with a single click.
 - **Cohort datasets** – curated percentile bands generated from Dune queries (`dune_queries/`) with filters to strip wash trades and insane outliers. Corresponding JSON files live under `data/`.
 
 ## Quick start
@@ -26,20 +27,43 @@ Interactive Streamlit app for modelling OpenSea's SEA airdrop using real on-chai
    cat <<'ENV' > .env
    DUNE_API_KEY=your_dune_api_key
    DEMO_WALLET=0xd86Be55512f44e643f410b743872879B174812Fd
+   BASE_URL=https://sea.mom
+   SHARE_SERVICE_URL=http://127.0.0.1:4076
+   SHARE_PUBLIC_BASE=https://sea.mom
    ENV
    ```
 
-3. Launch Streamlit:
+3. Install the companion share service dependencies (skip if you only need the estimator):
+
+   ```bash
+   npm install --prefix share-service
+   ```
+
+4. Launch Streamlit:
 
    ```bash
    streamlit run sea_airdrop_dashboard.py
    ```
 
-4. Open the local URL, choose an OG cohort, paste a wallet (or use the demo), and hit **Fetch history**. The estimator will auto-fill sliders based on the wallet's percentile.
+5. (Optional) Start the share-card service for live previews:
+
+   ```bash
+   npm run start --prefix share-service
+   ```
+
+   Or supervise both processes with PM2:
+
+   ```bash
+   pm2 start ecosystem.config.js
+   pm2 save
+   ```
+
+6. Open the local URL, choose an OG cohort, paste a wallet (or use the demo), and hit **Fetch history**. The estimator will auto-fill sliders based on the wallet's percentile.
 
 ## Repo layout
 
 ```
+ecosystem.config.js              # PM2 definition for Streamlit + share service
 sea_airdrop_dashboard.py        # Streamlit app
 requirements.txt                # minimal Python deps (generate with pip freeze if needed)
 data/
@@ -61,6 +85,10 @@ opensea_metrics.py              # legacy CLI helper (summaries, CSV exports)
 3. Restart the app; the cohort selector will automatically pick up the new thresholds.
 
 If you want a different OG definition (e.g. first trade before mid‑2022 or minimum fee thresholds), tweak the SQL filters (`amount_usd`, `amount_original`, `platform_fee_amount`) and rerun. The app will adapt as long as the JSON schema remains the same (`usd_percentile_rank`, `wallet_count`, `min_total_usd`, `max_total_usd`, etc.).
+
+### Share-card service configuration
+
+The share service respects `SHARE_SERVICE_URL` (internal address), `SHARE_PUBLIC_BASE` (public-facing HTTPS base), and `BASE_URL` (also used elsewhere in the app). Set them in your `.env` or PM2 environment so generated links point at the correct domain. Without these values the service falls back to relative URLs, which is fine for local development.
 
 ## Developing further
 

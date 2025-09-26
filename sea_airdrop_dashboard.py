@@ -18,6 +18,7 @@ from app.ui.cohort import render_cohort_selector
 from app.ui.inputs import render_input_panel
 from app.ui.wallet import render_wallet_section
 from app.ui.reveal import run_reveal_presentation
+from app.ui.share import render_share_panel
 from app.ui.results import ScenarioSnapshot, render_results
 from app.calculations import (
     build_heatmap_data,
@@ -214,4 +215,18 @@ if st.session_state.has_revealed_once:
         scenario_snapshot=scenario_snapshot,
         selected_scenario=selected_scenario,
         reveal_signature=current_signature,
+    )
+
+    render_share_panel(
+        current_signature=current_signature,
+        cohort_name=cohort_selection,
+        cohort_estimate=cohort_estimate,
+        og_pool_pct=og_pool_pct,
+        fdv_billion=fdv_billion,
+        tier_pct=tier_pct,
+        featured_share=featured_share,
+        token_price=token_price,
+        scenario_usd=selected_scenario.usd_value,
+        scenario_tokens=selected_scenario.tokens_per_wallet,
+        wallet_report=wallet_report,
     )

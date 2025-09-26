@@ -22,6 +22,9 @@ DUNE_QUERY_WALLET_STATS_ID = 5850749
 DUNE_API_KEY = os.getenv("DUNE_API_KEY")
 DEMO_WALLET = os.getenv("DEMO_WALLET", "")
 
+SHARE_SERVICE_URL = os.getenv("SHARE_SERVICE_URL", "http://127.0.0.1:4076")
+SHARE_PUBLIC_BASE = os.getenv("SHARE_PUBLIC_BASE") or os.getenv("BASE_URL", "")
+
 # App-wide constants --------------------------------------------------------
 TOTAL_SUPPLY = 1_000_000_000
 DEFAULT_REVEAL_DURATION = 6

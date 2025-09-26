@@ -2,6 +2,8 @@ const path = require('path');
 
 const ROOT_DIR = __dirname;
 const SHARE_PORT = process.env.SHARE_SERVICE_PORT || '4076';
+const SHARE_PUBLIC_URL = process.env.SHARE_PUBLIC_URL || process.env.BASE_URL || '';
+const PUBLIC_APP_URL = process.env.PUBLIC_APP_URL || process.env.BASE_URL || '';
 
 module.exports = {
   apps: [
@@ -15,6 +17,8 @@ module.exports = {
       max_restarts: 10,
       env: {
         NODE_ENV: 'production',
+        SHARE_SERVICE_URL: process.env.SHARE_SERVICE_URL || `http://127.0.0.1:${SHARE_PORT}`,
+        SHARE_PUBLIC_BASE: process.env.SHARE_PUBLIC_BASE || SHARE_PUBLIC_URL,
       },
     },
     {
@@ -27,6 +31,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         SHARE_SERVICE_PORT: SHARE_PORT,
+        SHARE_PUBLIC_URL,
+        PUBLIC_APP_URL,
       },
     },
   ],
