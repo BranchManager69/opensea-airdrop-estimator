@@ -24,6 +24,7 @@ st.set_page_config(
 load_dotenv()
 DATA_DIR = Path("data")
 DUNE_QUERY_WALLET_STATS_ID = 5850749
+LOGOMARK_PATH = Path("assets/opensea_logomark.png")
 
 COHORT_CONFIG: Dict[str, Dict[str, Any]] = {
     "Super OG (≤2021)": {
@@ -347,30 +348,37 @@ def run_reveal_presentation(steps: List[tuple[str, str]], duration_seconds: int)
     st.success("Projection ready — scroll to view your estimated allocation.")
 
 
-st.markdown(
-    """
-    <div style="text-align: center;">
-        <h1 style="margin-bottom: 0.3rem;">OpenSea SEA Airdrop Estimator</h1>
-        <p style="font-size: 1.05rem; color: #475569; margin-top: 0;">
-            Model your allocation by dialling in launch dynamics, OG cohort positioning, and tier assumptions.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+header_container = st.container()
+with header_container:
+    logo_col, text_col = st.columns([1, 6], gap="small")
+    with logo_col:
+        if LOGOMARK_PATH.exists():
+            st.image(str(LOGOMARK_PATH), width=72)
+    with text_col:
+        st.markdown(
+            """
+            <div style="text-align: left;">
+                <h1 style="margin-bottom: 0.2rem; color: #04111d;">OpenSea SEA Airdrop Estimator</h1>
+                <p style="font-size: 1.05rem; color: #353840; margin-top: 0;">
+                    Model your allocation by dialing in launch dynamics, OG cohort positioning, and tier assumptions.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 st.markdown(
     """
     <style>
 div[data-testid="stButton"] button[kind="primary"] {
-        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        background: linear-gradient(135deg, #2081E2, #1868B7);
         color: #f8fafc;
         font-size: 1.08rem;
         font-weight: 600;
         padding: 0.95rem 3rem;
         border-radius: 18px;
         border: none;
-        box-shadow: 0 15px 32px rgba(59, 130, 246, 0.32);
+        box-shadow: 0 15px 32px rgba(32, 129, 226, 0.32);
         white-space: nowrap;
         display: inline-flex;
         align-items: center;
@@ -380,7 +388,7 @@ div[data-testid="stButton"] button[kind="primary"] {
         margin: 0 auto;
     }
     div[data-testid="stButton"] button[kind="primary"]:hover:not(:disabled) {
-        box-shadow: 0 20px 36px rgba(59, 130, 246, 0.38);
+        box-shadow: 0 20px 36px rgba(32, 129, 226, 0.38);
         transform: translateY(-1px);
     }
     div[data-testid="stButton"] button[kind="primary"]:disabled {
@@ -455,7 +463,7 @@ div[data-testid="stButton"] button[kind="primary"] {
         width: 34px;
         height: 34px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        background: linear-gradient(135deg, #2081E2, #1868B7);
         color: #e2e8f0;
         font-weight: 700;
         display: flex;
@@ -478,7 +486,7 @@ div[data-testid="stButton"] button[kind="primary"] {
     div[data-testid="stSelectbox"] label,
     div[data-testid="stMultiSelect"] label,
     div[data-testid="stSlider"] label {
-        color: #1d4ed8 !important;
+        color: #2081E2 !important;
         font-weight: 600 !important;
     }
     .cohort-timeline {
@@ -494,20 +502,20 @@ div[data-testid="stButton"] button[kind="primary"] {
         padding: 0.6rem 1.3rem;
         border-radius: 999px;
         background: rgba(148, 163, 184, 0.18);
-        color: #1f2937;
+        color: #04111d;
         font-weight: 600;
         border: 1px solid rgba(148, 163, 184, 0.4);
         transition: all 0.2s ease;
     }
     .cohort-timeline div[data-testid="stRadio"] label:hover {
-        border-color: rgba(59, 130, 246, 0.45);
-        color: #1d4ed8;
+        border-color: rgba(32, 129, 226, 0.45);
+        color: #2081E2;
     }
     .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div p {
-        color: #0f172a;
+        color: #04111d;
     }
     .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
-        color: #0f172a;
+        color: #04111d;
         font-weight: 700;
     }
     .cohort-timeline div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div::before {
@@ -515,7 +523,7 @@ div[data-testid="stButton"] button[kind="primary"] {
         position: absolute;
         inset: -2px;
         border-radius: 999px;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(29, 78, 216, 0.25));
+        background: linear-gradient(135deg, rgba(32, 129, 226, 0.25), rgba(12, 52, 93, 0.25));
         z-index: -1;
     }
     </style>
@@ -923,7 +931,7 @@ def render_hero() -> None:
     with hero_container:
         hero_html = textwrap.dedent(
             f"""
-            <div style="background: radial-gradient(circle at top left, #0f172a, #1f2937); color: #ffffff; padding: 2.5rem; border-radius: 18px; text-align: center; margin-top: 1.5rem;">
+            <div style="background: radial-gradient(circle at top left, #04111d, #0c345d); color: #ffffff; padding: 2.5rem; border-radius: 18px; text-align: center; margin-top: 1.5rem;">
                 <div style="font-size:0.85rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75;">Estimated payout</div>
                 <div style="font-size:3.1rem; font-weight:700; margin:0.65rem 0;">${usd_value:,.0f}</div>
                 <div style="font-size:1.15rem; opacity:0.9;">≈ {sea_amount:,.0f} SEA at ${token_price:,.2f} per token</div>
