@@ -496,72 +496,58 @@ div[data-testid="stButton"] button[kind="primary"] {
         font-weight: 600 !important;
     }
     .cohort-timeline {
-        margin: 1.4rem auto 0.4rem auto;
-        max-width: 760px;
-        position: relative;
-        padding: 1.2rem 0 0.5rem 0;
+        margin: 1.2rem auto 0.8rem auto;
+        max-width: 800px;
     }
-    .cohort-timeline::before {
-        content: "";
-        position: absolute;
-        top: 64px;
-        left: 10%;
-        right: 10%;
-        height: 2px;
-        background: linear-gradient(90deg, rgba(32, 129, 226, 0.22), rgba(12, 52, 93, 0.22));
-        z-index: 0;
+    .cohort-cards-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
     }
-    .cohort-timeline div[data-testid="stRadio"] > div {
-        justify-content: center;
-        gap: 1.4rem;
-    }
-    .cohort-timeline div[data-testid="stRadio"] label {
-        position: relative;
-        padding: 0;
-        border: none;
-        background: transparent;
-        z-index: 1;
-    }
-    .cohort-timeline label[data-baseweb="radio"] > div {
-        min-width: 210px;
-        min-height: 116px;
+    .cohort-card {
         border-radius: 16px;
         border: 1px solid rgba(226, 230, 239, 0.85);
         background: rgba(255, 255, 255, 0.96);
-        padding: 1rem 1.1rem;
+        padding: 1.2rem 1.4rem;
         box-shadow: 0 10px 20px rgba(4, 17, 29, 0.08);
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.35rem;
-        text-align: center;
+        gap: 0.45rem;
         transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
-    .cohort-timeline label[data-baseweb="radio"] > div p {
-        margin: 0;
-        white-space: pre-line;
-        font-size: 0.95rem;
-        line-height: 1.3;
-        color: #04111d;
-        font-weight: 600;
-    }
-    .cohort-timeline label[data-baseweb="radio"] > div p::first-line {
-        font-size: 1.05rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-    }
-    .cohort-timeline label[data-baseweb="radio"]:hover > div {
+    .cohort-card:hover {
         transform: translateY(-6px);
         box-shadow: 0 18px 32px rgba(4, 17, 29, 0.16);
         border-color: rgba(32, 129, 226, 0.35);
     }
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div {
-        background: linear-gradient(135deg, rgba(32, 129, 226, 0.95), rgba(12, 52, 93, 0.95));
+    .cohort-card.selected {
+        background: linear-gradient(135deg, rgba(32, 129, 226, 0.95), rgba(12, 52, 93, 0.92));
         border-color: rgba(32, 129, 226, 0.7);
         box-shadow: 0 22px 40px rgba(32, 129, 226, 0.35);
     }
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div p {
+    .cohort-card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #04111d;
+        letter-spacing: 0.02em;
+    }
+    .cohort-card.selected .cohort-card-title {
+        color: #f8fafc;
+    }
+    .cohort-card-year {
+        font-size: 0.95rem;
+        color: #1868B7;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .cohort-card.selected .cohort-card-year {
+        color: #d4e7f9;
+    }
+    .cohort-card-metric {
+        font-size: 0.95rem;
+        color: #353840;
+    }
+    .cohort-card.selected .cohort-card-metric {
         color: #f8fafc;
     }
     .cohort-description {
@@ -571,7 +557,7 @@ div[data-testid="stButton"] button[kind="primary"] {
         border: 1px solid rgba(226, 230, 239, 0.9);
         border-radius: 12px;
         padding: 0.85rem 1rem;
-        margin-top: 0.4rem;
+        margin-top: 0.6rem;
     }
     </style>
     """,
@@ -602,48 +588,38 @@ for name in cohort_names:
 
 timeline_container = st.container()
 with timeline_container:
-    timeline_labels = [COHORT_CONFIG[name]["timeline_label"] for name in cohort_names]
-    label_to_option = dict(zip(timeline_labels, cohort_names))
-    current_label = st.session_state.get(
-        "cohort_timeline",
-        COHORT_CONFIG[cohort_selection]["timeline_label"],
+    st.radio(
+        "OG cohort timeline",
+        options=cohort_names,
+        index=cohort_names.index(cohort_selection),
+        horizontal=True,
+        key="cohort_radio",
     )
-    current_conf = COHORT_CONFIG[label_to_option[current_label]]
-    chooser_col, desc_col = st.columns([3, 2.2], gap="large")
-    with chooser_col:
-        st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
-
-        option_indices = list(range(len(cohort_names)))
-
-        def _format_option(idx: int) -> str:
-            name = cohort_names[idx]
-            conf = COHORT_CONFIG[name]
-            total = cohort_totals.get(name, 0)
-            total_text = f"{total:,} wallets" if total else "Loading…"
-            return (
-                f"{conf['title']}\n"
-                f"{conf['timeline_label']} · {conf['tagline']}\n"
-                f"{total_text}"
-            )
-
-        current_idx = cohort_names.index(cohort_selection)
-        timeline_choice_idx = st.radio(
-            "OG cohort timeline",
-            options=option_indices,
-            index=current_idx,
-            horizontal=True,
-            label_visibility="collapsed",
-            key="cohort_timeline_index",
-            format_func=_format_option,
+    cohort_selection = st.session_state["cohort_radio"]
+    st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
+    cards_html = []
+    for name in cohort_names:
+        conf = COHORT_CONFIG[name]
+        total = cohort_totals.get(name, 0)
+        total_text = f"{total:,} wallets" if total else "Loading…"
+        selected_class = "selected" if name == cohort_selection else ""
+        cards_html.append(
+            f"<div class='cohort-card {selected_class}'>"
+            f"<span class='cohort-card-title'>{conf['title']}</span>"
+            f"<span class='cohort-card-year'>{conf['timeline_label']} · {conf['tagline']}</span>"
+            f"<span class='cohort-card-metric'>{total_text}</span>"
+            "</div>"
         )
-        st.markdown("</div>", unsafe_allow_html=True)
-    with desc_col:
-        if current_conf.get("description"):
-            st.markdown(
-                f"<div class='cohort-description'>{current_conf['description']}</div>",
-                unsafe_allow_html=True,
-            )
-    cohort_selection = cohort_names[timeline_choice_idx]
+    st.markdown(
+        "<div class='cohort-cards-row'>" + "".join(cards_html) + "</div>",
+        unsafe_allow_html=True,
+    )
+    selected_conf = COHORT_CONFIG[cohort_selection]
+    if selected_conf.get("description"):
+        st.markdown(
+            f"<div class='cohort-description'>{selected_conf['description']}</div>",
+            unsafe_allow_html=True,
+        )
 
 st.session_state["cohort_selection"] = cohort_selection
 st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
