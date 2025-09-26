@@ -570,17 +570,6 @@ with wallet_holder:
 wallet_report = st.session_state.get("wallet_report")
 wallet_band = st.session_state.get("wallet_band")
 
-if wallet_report and distribution_rows:
-    summary_snapshot = wallet_report.get("summary", {})
-    total_usd_snapshot = float(summary_snapshot.get("total_usd") or 0.0)
-    recomputed_band = determine_percentile_band(
-        total_usd_snapshot,
-        distribution_rows,
-        cohort_size,
-    )
-    st.session_state["wallet_band"] = recomputed_band
-    wallet_band = recomputed_band
-
 if wallet_report and wallet_report.get("summary"):
     summary = wallet_report["summary"]
     first_trade = pd.to_datetime(summary.get("first_trade")) if summary.get("first_trade") else None
@@ -727,6 +716,18 @@ with st.container():
             fdv_sensitivity.append(fdv_billion)
             fdv_sensitivity = sorted(set(fdv_sensitivity))
         st.caption("Optional extra FDV points you might want to analyze later.")
+
+
+if wallet_report and distribution_rows:
+    summary_snapshot = wallet_report.get("summary", {})
+    total_usd_snapshot = float(summary_snapshot.get("total_usd") or 0.0)
+    recomputed_band = determine_percentile_band(
+        total_usd_snapshot,
+        distribution_rows,
+        cohort_size,
+    )
+    st.session_state["wallet_band"] = recomputed_band
+    wallet_band = recomputed_band
 
 
 reveal_duration = DEFAULT_REVEAL_DURATION
