@@ -16,10 +16,60 @@ from app.data_sources import estimate_og_cohort_size, fetch_wallet_report
 def render_wallet_section(
     *,
     distribution_rows: List[Dict[str, Any]],
+    preset_wallet: Optional[str] = None,
+    auto_fetch: bool = False,
 ) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
     """Render wallet lookup controls and summary metrics."""
 
     wallet_holder = st.container()
+
+    def perform_fetch(address: str) -> None:
+        address = address.strip()
+        if not address:
+            return
+        try:
+            with st.spinner("Contacting Dune …"):
+                report = fetch_wallet_report(address)
+            if not report or not report.get("summary"):
+                st.info("No OpenSea trades found for this wallet.")
+                st.session_state.pop("wallet_report", None)
+                st.session_state.pop("wallet_band", None)
+            else:
+                st.session_state["wallet_report"] = report
+                summary = report["summary"]
+                total_usd = float(summary.get("total_usd") or 0.0)
+                current_cohort_value = st.session_state.get("cohort_size", 100_000)
+                band_info = determine_percentile_band(
+                    total_usd,
+                    distribution_rows,
+                    current_cohort_value,
+                )
+                st.session_state["wallet_band"] = band_info
+                if band_info:
+                    mid_percentile = (
+                        band_info["start_percentile"] + band_info["end_percentile"]
+                    ) / 2
+                    st.session_state["tier_pct"] = float(
+                        max(0.1, min(100.0, mid_percentile))
+                    )
+                else:
+                    st.info(
+                        "This wallet’s volume falls outside the cohort size you selected. "
+                        "Increase the cohort or adjust the OG definition to include it."
+                    )
+                if distribution_rows:
+                    cohort_est = estimate_og_cohort_size(distribution_rows)
+                    if cohort_est:
+                        st.session_state["cohort_size_estimate"] = cohort_est
+                st.session_state["wallet_address"] = address
+                st.success("Wallet snapshot updated. Scroll down to view personalised metrics.")
+        except RuntimeError as err:
+            st.error(str(err))
+        except requests.exceptions.RequestException as err:
+            st.error(f"Failed to fetch wallet data: {err}")
+
+    if preset_wallet:
+        st.session_state["wallet_input"] = preset_wallet
 
     with wallet_holder:
         st.markdown("**Lookup your OpenSea wallet**")
@@ -38,46 +88,14 @@ def render_wallet_section(
             if not wallet_address:
                 st.warning("Enter a wallet address to fetch OpenSea activity.")
             else:
-                try:
-                    with st.spinner("Contacting Dune …"):
-                        report = fetch_wallet_report(wallet_address)
-                    if not report or not report.get("summary"):
-                        st.info("No OpenSea trades found for this wallet.")
-                        st.session_state.pop("wallet_report", None)
-                        st.session_state.pop("wallet_band", None)
-                    else:
-                        st.session_state["wallet_report"] = report
-                        summary = report["summary"]
-                        total_usd = float(summary.get("total_usd") or 0.0)
-                        current_cohort_value = st.session_state.get("cohort_size", 100_000)
-                        band_info = determine_percentile_band(
-                            total_usd,
-                            distribution_rows,
-                            current_cohort_value,
-                        )
-                        st.session_state["wallet_band"] = band_info
-                        if band_info:
-                            mid_percentile = (
-                                band_info["start_percentile"] + band_info["end_percentile"]
-                            ) / 2
-                            st.session_state["tier_pct"] = float(
-                                max(0.1, min(100.0, mid_percentile))
-                            )
-                        else:
-                            st.info(
-                                "This wallet’s volume falls outside the cohort size you selected. "
-                                "Increase the cohort or adjust the OG definition to include it."
-                            )
-                        if distribution_rows:
-                            cohort_est = estimate_og_cohort_size(distribution_rows)
-                            if cohort_est:
-                                st.session_state["cohort_size_estimate"] = cohort_est
-                        st.session_state["wallet_address"] = wallet_address
-                        st.success("Wallet snapshot updated. Scroll down to view personalised metrics.")
-                except RuntimeError as err:
-                    st.error(str(err))
-                except requests.exceptions.RequestException as err:
-                    st.error(f"Failed to fetch wallet data: {err}")
+                perform_fetch(wallet_address)
+                st.session_state["_autofetched_wallet"] = wallet_address.lower()
+
+    if auto_fetch and preset_wallet:
+        normalized = preset_wallet.lower()
+        if st.session_state.get("_autofetched_wallet") != normalized:
+            perform_fetch(preset_wallet)
+            st.session_state["_autofetched_wallet"] = normalized
 
     wallet_report = st.session_state.get("wallet_report")
     wallet_band = st.session_state.get("wallet_band")

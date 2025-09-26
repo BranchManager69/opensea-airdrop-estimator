@@ -84,13 +84,6 @@ def render_cohort_selector() -> CohortContext:
     st.session_state["cohort_selection"] = cohort_selection
     st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
 
-    current_slug = COHORT_CONFIG[cohort_selection]["slug"]
-    existing_slug = st.query_params.get("cohort")
-    if isinstance(existing_slug, (list, tuple)):
-        existing_slug = existing_slug[0] if existing_slug else None
-    if existing_slug != current_slug:
-        st.query_params["cohort"] = current_slug
-
     distribution_rows = cohort_distributions.get(cohort_selection, [])
     if not distribution_rows:
         st.warning(

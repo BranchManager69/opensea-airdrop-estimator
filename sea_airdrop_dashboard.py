@@ -40,6 +40,14 @@ bootstrap_session_state()
 params = st.query_params
 sync_cohort_selection_from_query(params)
 
+wallet_values = params.get("wallet")
+if isinstance(wallet_values, (list, tuple)):
+    wallet_param = wallet_values[0] if wallet_values else None
+else:
+    wallet_param = wallet_values
+
+wallet_param = wallet_param.strip() if wallet_param else None
+
 render_header()
 inject_global_styles()
 
@@ -85,6 +93,8 @@ st.session_state["cohort_selection_prev"] = cohort_selection
 
 wallet_report, wallet_band = render_wallet_section(
     distribution_rows=distribution_rows,
+    preset_wallet=wallet_param,
+    auto_fetch=bool(wallet_param),
 )
 
 inputs_context = render_input_panel(cohort_context)
