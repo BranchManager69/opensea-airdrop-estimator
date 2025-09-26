@@ -1,8 +1,6 @@
 import html
 import math
 import textwrap
-import time
-from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List
 
 import altair as alt
@@ -29,6 +27,7 @@ from app.ui.layout import (
     inject_global_styles,
     render_header,
 )
+from app.ui.reveal import run_reveal_presentation
 from app.calculations import (
     build_heatmap_data,
     build_share_table,
@@ -52,30 +51,6 @@ st.set_page_config(
 bootstrap_session_state()
 params = st.query_params
 sync_cohort_selection_from_query(params)
-
-def run_reveal_presentation(steps: List[tuple[str, str]], duration_seconds: int) -> None:
-    """Animate the reveal timeline with a progress bar and step narration."""
-
-    timeline = st.container()
-    progress = timeline.progress(0, text="Preparing SEA airdrop projection…")
-    narration = timeline.empty()
-
-    total_steps = max(len(steps), 1)
-    # Avoid zero division and guarantee a minimum dwell per step.
-    step_duration = max(duration_seconds / total_steps, 0.35)
-
-    for idx, (title, detail) in enumerate(steps, start=1):
-        progress.progress(
-            int(idx / total_steps * 100),
-            text=title,
-        )
-        narration.markdown(f"**{title}**\n\n{detail}")
-        time.sleep(step_duration)
-
-    progress.empty()
-    narration.empty()
-    st.success("Projection ready — scroll to view your estimated allocation.")
-
 
 render_header()
 inject_global_styles()
