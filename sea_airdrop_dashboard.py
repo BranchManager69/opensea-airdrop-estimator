@@ -16,15 +16,18 @@ import streamlit as st
 import pandas as pd
 import requests
 
+LOGOMARK_PATH = Path("assets/opensea_logomark.png")
+PAGE_ICON = str(LOGOMARK_PATH) if LOGOMARK_PATH.exists() else "🌊"
+
 st.set_page_config(
-    page_title="SEA Airdrop Estimator",
+    page_title="Sea Mom",
+    page_icon=PAGE_ICON,
     layout="wide",
 )
 
 load_dotenv()
 DATA_DIR = Path("data")
 DUNE_QUERY_WALLET_STATS_ID = 5850749
-LOGOMARK_PATH = Path("assets/opensea_logomark.png")
 
 COHORT_CONFIG: Dict[str, Dict[str, Any]] = {
     "Super OG (≤2021)": {
@@ -381,10 +384,12 @@ with header_container:
         st.markdown(
             """
             <div style="text-align: left;">
-                <h1 style="margin-bottom: 0.2rem; color: #04111d;">OpenSea SEA Airdrop Estimator</h1>
-                <p style="font-size: 1.05rem; color: #353840; margin-top: 0;">
-                    Model your allocation by dialing in launch dynamics, OG cohort positioning, and tier assumptions.
-                </p>
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:1rem; justify-content:space-between;">
+                    <h1 style="margin: 0; color: #04111d;">Sea Mom</h1>
+                    <span style="font-size: 1rem; color: #475569; white-space: nowrap;">
+                        &ldquo;See, mom? I told you those 2021 NFT flips would pay off.&rdquo;
+                    </span>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -646,18 +651,26 @@ if existing_slug != current_slug:
     st.query_params["cohort"] = current_slug
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
 distribution_rows = cohort_distributions.get(cohort_selection, [])
+cohort_estimate = 0
+
+if distribution_rows:
+    cohort_estimate = cohort_totals.get(cohort_selection, 0)
+    if cohort_estimate:
+        st.session_state["cohort_size_estimate"] = cohort_estimate
+else:
+    cohort_estimate = st.session_state.get("cohort_size_estimate", 0)
+
+if cohort_estimate:
+    st.caption(
+        f"{cohort_selection}: approximately {cohort_estimate:,} wallets qualify under this definition. "
+        "Use the cohort size slider below to focus on your own OG definition."
+    )
 
 if not distribution_rows:
     st.warning(
         f"Percentile distribution file missing for {cohort_selection}. "
         f"Expected at {selected_cohort_conf['path']}"
     )
-
-if distribution_rows:
-    cohort_estimate = cohort_totals.get(cohort_selection, 0)
-    st.session_state["cohort_size_estimate"] = cohort_estimate
-else:
-    cohort_estimate = st.session_state.get("cohort_size_estimate")
 
 slider_min = 50_000
 slider_mid = 100_000
@@ -827,6 +840,7 @@ if cohort_estimate:
     )
 
 cta_col = st.container()
+clicked = False
 with cta_col:
     left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
     with button_area:
@@ -837,11 +851,6 @@ with cta_col:
             use_container_width=True,
             disabled=st.session_state.has_revealed_once,
         )
-    if clicked:
-        run_reveal_presentation(steps_for_reveal, reveal_duration)
-        st.session_state.has_revealed_once = True
-        st.session_state.last_reveal_signature = current_signature
-        st.rerun()
 
 total_supply = TOTAL_SUPPLY
 
@@ -1003,6 +1012,12 @@ current_signature = (
     tuple(share_options),
     tuple(fdv_sensitivity),
 )
+
+if clicked:
+    run_reveal_presentation(steps_for_reveal, reveal_duration)
+    st.session_state.has_revealed_once = True
+    st.session_state.last_reveal_signature = current_signature
+    st.rerun()
 
 hero_container = st.container()
 
