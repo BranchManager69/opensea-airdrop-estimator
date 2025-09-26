@@ -1,1 +1,26 @@
+# Environment
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Node / frontend
+node_modules/
+pnpm-lock.yaml
+
+# Data exports (keep curated cohort files)
+data/opensea_og_pages/
+data/opensea_og_wallets_full/
+data/opensea_og_wallets_snapshot*.json*
+data/opensea_og_wallets_snapshot*.parquet
+!data/opensea_og_percentile_distribution_pre2022.json
+!data/opensea_og_percentile_distribution_pre2023.json
+!data/opensea_og_percentile_distribution_pre2024.json
+
+# Archives and misc
+*.zip
+
+# Streamlit cache/state
+.streamlit/
