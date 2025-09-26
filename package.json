@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@duneanalytics/client-sdk": "^0.2.5"
+	}
+}
