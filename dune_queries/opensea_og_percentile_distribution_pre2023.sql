@@ -57,6 +57,7 @@ wallet_aggregates AS (
         COALESCE(SUM(royalty_fee_amount), 0)             AS royalty_fee_eth
     FROM wallet_events
     GROUP BY wallet
+    HAVING COALESCE(SUM(platform_fee_amount), 0) >= 0.05 -- require ≥0.05 ETH lifetime platform fees
 ),
 ranked AS (
     SELECT

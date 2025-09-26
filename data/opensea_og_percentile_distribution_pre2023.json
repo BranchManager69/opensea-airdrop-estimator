@@ -1,1 +1,1043 @@
-{"execution_id":"01K61TQM1TKFPR9DS62J3HJTG2","query_id":5851339,"is_execution_finished":true,"state":"QUERY_STATE_COMPLETED","submitted_at":"2025-09-26T01:38:19.322697Z","expires_at":"2025-12-25T01:38:51.782216Z","execution_started_at":"2025-09-26T01:38:28.544677Z","execution_ended_at":"2025-09-26T01:38:51.78221Z","result":{"rows":[{"max_total_eth":2608.9445676819605,"max_total_usd":3014070.6815125137,"min_total_eth":123.94993232706297,"min_total_usd":389257.0893958913,"sum_total_eth":39210171.812334396,"sum_total_usd":36756353444.41961,"usd_percentile_rank":1,"wallet_count":34395},{"max_total_eth":275.5130312943949,"max_total_usd":355906.74829760834,"min_total_eth":58.79262545231104,"min_total_usd":192002.91003883595,"sum_total_eth":12241023.428812012,"sum_total_usd":8975012168.568203,"usd_percentile_rank":2,"wallet_count":34395},{"max_total_eth":120.32726946897289,"max_total_usd":181977.40003346273,"min_total_eth":36.15331473877622,"min_total_usd":120048.75550473937,"sum_total_eth":8199570.5939598875,"sum_total_usd":5084595256.854531,"usd_percentile_rank":3,"wallet_count":34395},{"max_total_eth":75.7413929099106,"max_total_usd":115432.76140117452,"min_total_eth":24.76896491831821,"min_total_usd":84005.54088371534,"sum_total_eth":5790360.08316035,"sum_total_usd":3388947226.0619316,"usd_percentile_rank":4,"wallet_count":34395},{"max_total_eth":51.85347661327156,"max_total_usd":81380.73271620978,"min_total_eth":18.033171301579358,"min_total_usd":62126.703500007075,"sum_total_eth":4795827.597591408,"sum_total_usd":2448243769.909263,"usd_percentile_rank":5,"wallet_count":34395},{"max_total_eth":39.36436254186902,"max_total_usd":60417.67477920865,"min_total_eth":13.664236329894438,"min_total_usd":47916.84353336781,"sum_total_eth":3459584.5334268427,"sum_total_usd":1850943924.1125484,"usd_percentile_rank":6,"wallet_count":34395},{"max_total_eth":31.05657575465416,"max_total_usd":46785.53929393348,"min_total_eth":10.67019013659209,"min_total_usd":38124.23584501606,"sum_total_eth":3745642.9502438772,"sum_total_usd":1453179818.8558316,"usd_percentile_rank":7,"wallet_count":34395},{"max_total_eth":25.55539577284449,"max_total_usd":37326.89383575727,"min_total_eth":8.551137300595036,"min_total_usd":30986.5654796355,"sum_total_eth":3086828.2539302814,"sum_total_usd":1169884082.08336,"usd_percentile_rank":8,"wallet_count":34395},{"max_total_eth":20.86038877522669,"max_total_usd":30388.318634236533,"min_total_eth":7.015071436376348,"min_total_usd":25665.742665558675,"sum_total_eth":3040963.1732576927,"sum_total_usd":960901040.5362307,"usd_percentile_rank":9,"wallet_count":34395},{"max_total_eth":17.838301374928832,"max_total_usd":25215.677789572546,"min_total_eth":5.8589548492941255,"min_total_usd":21604.605100955225,"sum_total_eth":2448441.098436034,"sum_total_usd":803035212.2160261,"usd_percentile_rank":10,"wallet_count":34395},{"max_total_eth":15.084990707008524,"max_total_usd":21248.57044815172,"min_total_eth":4.939288255123099,"min_total_usd":18373.977479046065,"sum_total_eth":2149952.6209165608,"sum_total_usd":679987160.0074787,"usd_percentile_rank":11,"wallet_count":34395},{"max_total_eth":12.969762437898336,"max_total_usd":18090.976294871238,"min_total_eth":4.153961057478335,"min_total_usd":15741.350620249264,"sum_total_eth":1892611.511443641,"sum_total_usd":580777207.171875,"usd_percentile_rank":12,"wallet_count":34395},{"max_total_eth":11.182379548474175,"max_total_usd":15506.275745698284,"min_total_eth":3.5455598990359767,"min_total_usd":13566.45367135273,"sum_total_eth":1730240.3515912108,"sum_total_usd":499079129.21322984,"usd_percentile_rank":13,"wallet_count":34395},{"max_total_eth":9.711468682075468,"max_total_usd":13373.687993789736,"min_total_eth":3.0564962701713987,"min_total_usd":11805.599033820567,"sum_total_eth":1355148.230504328,"sum_total_usd":432394431.59666944,"usd_percentile_rank":14,"wallet_count":34395},{"max_total_eth":8.514264023615068,"max_total_usd":11641.466416876274,"min_total_eth":2.6901714485821056,"min_total_usd":10307.14763085615,"sum_total_eth":1117718.012198881,"sum_total_usd":376946908.0478504,"usd_percentile_rank":15,"wallet_count":34395},{"max_total_eth":7.413543593900141,"max_total_usd":10172.943791272139,"min_total_eth":2.3587727914643097,"min_total_usd":9030.16972189488,"sum_total_eth":1099957.5971487463,"sum_total_usd":329848826.6828957,"usd_percentile_rank":16,"wallet_count":34395},{"max_total_eth":6.54633765824728,"max_total_usd":8915.939464416475,"min_total_eth":2.0468289053317363,"min_total_usd":7958.095470416012,"sum_total_eth":983985.7437817033,"sum_total_usd":289731449.9800949,"usd_percentile_rank":17,"wallet_count":34395},{"max_total_eth":5.800736940545777,"max_total_usd":7859.419506969498,"min_total_eth":1.8288598987738234,"min_total_usd":7040.320461464345,"sum_total_eth":939851.0867497931,"sum_total_usd":255925279.9729911,"usd_percentile_rank":18,"wallet_count":34395},{"max_total_eth":5.177242933770708,"max_total_usd":6955.454516939049,"min_total_eth":1.6186811356907838,"min_total_usd":6256.700336815308,"sum_total_eth":727203.0958875864,"sum_total_usd":226909270.25469285,"usd_percentile_rank":19,"wallet_count":34395},{"max_total_eth":4.666622424542647,"max_total_usd":6184.278944909331,"min_total_eth":1.4324092750863537,"min_total_usd":5579.962582219165,"sum_total_eth":792240.296249567,"sum_total_usd":202114804.2532844,"usd_percentile_rank":20,"wallet_count":34395},{"max_total_eth":4.190192768845558,"max_total_usd":5517.969353556574,"min_total_eth":1.276475546770656,"min_total_usd":4988.94703376698,"sum_total_eth":804586.4908441219,"sum_total_usd":180489465.17725575,"usd_percentile_rank":21,"wallet_count":34395},{"max_total_eth":3.7660074994428294,"max_total_usd":4934.044748635647,"min_total_eth":1.1337950688310394,"min_total_usd":4473.734227062678,"sum_total_eth":557740.3924632506,"sum_total_usd":161627861.50771645,"usd_percentile_rank":22,"wallet_count":34395},{"max_total_eth":3.3772510823164206,"max_total_usd":4425.756593854593,"min_total_eth":1.005748353755595,"min_total_usd":4030.3467227613824,"sum_total_eth":586117.9715425795,"sum_total_usd":145221876.47887903,"usd_percentile_rank":23,"wallet_count":34395},{"max_total_eth":3.0490347700368012,"max_total_usd":3990.217652351509,"min_total_eth":0.9220282187591614,"min_total_usd":3643.493077783346,"sum_total_eth":652744.3584809253,"sum_total_usd":131219786.2170471,"usd_percentile_rank":24,"wallet_count":34395},{"max_total_eth":2.7798112952739684,"max_total_usd":3606.6690313011163,"min_total_eth":0.8341573164764344,"min_total_usd":3301.7648625600023,"sum_total_eth":506648.60774524923,"sum_total_usd":118721319.1041739,"usd_percentile_rank":25,"wallet_count":34395},{"max_total_eth":2.527969257235134,"max_total_usd":3270.5007183121656,"min_total_eth":0.7571763223521653,"min_total_usd":3006.602389580957,"sum_total_eth":468424.73709789093,"sum_total_usd":107857304.7886903,"usd_percentile_rank":26,"wallet_count":34395},{"max_total_eth":2.3076805240232585,"max_total_usd":2979.0360426590087,"min_total_eth":0.6867337331580885,"min_total_usd":2737.0910224325794,"sum_total_eth":414563.4045030068,"sum_total_usd":98262301.73560801,"usd_percentile_rank":27,"wallet_count":34395},{"max_total_eth":2.124101422622613,"max_total_usd":2711.81124684605,"min_total_eth":0.6277071482924187,"min_total_usd":2493.685475396173,"sum_total_eth":519116.180677074,"sum_total_usd":89455381.45691554,"usd_percentile_rank":28,"wallet_count":34395},{"max_total_eth":1.9485693378433595,"max_total_usd":2470.551048923277,"min_total_eth":0.5664959994419864,"min_total_usd":2271.607782078665,"sum_total_eth":360000.8869719891,"sum_total_usd":81487910.61100344,"usd_percentile_rank":29,"wallet_count":34395},{"max_total_eth":1.7701437395677362,"max_total_usd":2250.1243035404327,"min_total_eth":0.504275944506985,"min_total_usd":2073.723304014403,"sum_total_eth":492452.2563000691,"sum_total_usd":74302476.35547768,"usd_percentile_rank":30,"wallet_count":34395},{"max_total_eth":1.615959397833538,"max_total_usd":2055.9470863944584,"min_total_eth":0.46070138689490375,"min_total_usd":1899.7014647651692,"sum_total_eth":402720.46766421106,"sum_total_usd":68011242.53407153,"usd_percentile_rank":31,"wallet_count":34395},{"max_total_eth":1.4876712567924077,"max_total_usd":1882.7963721073043,"min_total_eth":0.42336119415978096,"min_total_usd":1736.4971818334434,"sum_total_eth":332697.67827598285,"sum_total_usd":62215883.49040705,"usd_percentile_rank":32,"wallet_count":34395},{"max_total_eth":1.366799111823409,"max_total_usd":1720.8851889201144,"min_total_eth":0.3944772512162263,"min_total_usd":1587.937081388676,"sum_total_eth":395673.55906812364,"sum_total_usd":56864707.1604137,"usd_percentile_rank":33,"wallet_count":34395},{"max_total_eth":1.2433883548274192,"max_total_usd":1574.212032505476,"min_total_eth":0.3611642579976536,"min_total_usd":1456.6159638213132,"sum_total_eth":310288.26773291786,"sum_total_usd":52095824.656922445,"usd_percentile_rank":34,"wallet_count":34395},{"max_total_eth":1.1429895197458089,"max_total_usd":1444.1241255902712,"min_total_eth":0.3285134073071414,"min_total_usd":1336.3454237759,"sum_total_eth":208463.55663150185,"sum_total_usd":47796152.14477092,"usd_percentile_rank":35,"wallet_count":34394},{"max_total_eth":1.0509070845962838,"max_total_usd":1324.801587867727,"min_total_eth":0.3003040224610758,"min_total_usd":1228.7695025624705,"sum_total_eth":142623.74253755453,"sum_total_usd":43887909.72642552,"usd_percentile_rank":36,"wallet_count":34394},{"max_total_eth":0.9837149300177942,"max_total_usd":1218.8411073045556,"min_total_eth":0.2809004847646095,"min_total_usd":1132.4789447569167,"sum_total_eth":217962.1947306917,"sum_total_usd":40423008.59206699,"usd_percentile_rank":37,"wallet_count":34394},{"max_total_eth":0.9055566835282275,"max_total_usd":1123.4973061350304,"min_total_eth":0.2555233729787406,"min_total_usd":1045.1015866777216,"sum_total_eth":205327.41799669722,"sum_total_usd":37270805.626152076,"usd_percentile_rank":38,"wallet_count":34394},{"max_total_eth":0.8374185086553348,"max_total_usd":1036.991260279542,"min_total_eth":0.2412186743435997,"min_total_usd":966.9717863610035,"sum_total_eth":289581.0681087252,"sum_total_usd":34460066.132138185,"usd_percentile_rank":39,"wallet_count":34394},{"max_total_eth":0.7717938157025873,"max_total_usd":959.252285769197,"min_total_eth":0.21715553106743005,"min_total_usd":891.7875151014263,"sum_total_eth":134503.77003699704,"sum_total_usd":31820290.913753636,"usd_percentile_rank":40,"wallet_count":34394},{"max_total_eth":0.7141159103155564,"max_total_usd":884.3879409597808,"min_total_eth":0.20042358805684404,"min_total_usd":823.0058356182017,"sum_total_eth":131152.21049204125,"sum_total_usd":29345508.73937299,"usd_percentile_rank":41,"wallet_count":34394},{"max_total_eth":0.6604563460145397,"max_total_usd":816.8315676417259,"min_total_eth":0.1886059272300683,"min_total_usd":761.6154326295659,"sum_total_eth":115736.71026463213,"sum_total_usd":27139933.18228275,"usd_percentile_rank":42,"wallet_count":34394},{"max_total_eth":0.6142145471272935,"max_total_usd":755.6966105091832,"min_total_eth":0.1749225550200107,"min_total_usd":703.0289568845017,"sum_total_eth":151140.35871810993,"sum_total_usd":25072193.213613924,"usd_percentile_rank":43,"wallet_count":34394},{"max_total_eth":0.5687908123041082,"max_total_usd":697.4015785493162,"min_total_eth":0.15900157988363792,"min_total_usd":650.4852826540011,"sum_total_eth":201611.98843073164,"sum_total_usd":23163565.01636639,"usd_percentile_rank":44,"wallet_count":34394},{"max_total_eth":0.5199613482946226,"max_total_usd":646.1249891419336,"min_total_eth":0.14983193231801686,"min_total_usd":604.2272193082689,"sum_total_eth":141412.5621686256,"sum_total_usd":21496320.354333535,"usd_percentile_rank":45,"wallet_count":34394},{"max_total_eth":0.4912383420184603,"max_total_usd":599.9630151563287,"min_total_eth":0.1393336353063192,"min_total_usd":560.2240641707424,"sum_total_eth":126042.9341751167,"sum_total_usd":19957747.443339318,"usd_percentile_rank":46,"wallet_count":34394},{"max_total_eth":0.4545656602183462,"max_total_usd":555.8229969131195,"min_total_eth":0.12798384201072494,"min_total_usd":517.6208158766025,"sum_total_eth":152008.07284256074,"sum_total_usd":18449986.249984816,"usd_percentile_rank":47,"wallet_count":34394},{"max_total_eth":0.41900489316626355,"max_total_usd":513.5154911750899,"min_total_eth":0.11932129632652276,"min_total_usd":478.73021493470594,"sum_total_eth":126190.7839806807,"sum_total_usd":17054995.379212245,"usd_percentile_rank":48,"wallet_count":34394},{"max_total_eth":0.3897208857124527,"max_total_usd":474.9553174764799,"min_total_eth":0.10701572254636736,"min_total_usd":442.7454653924323,"sum_total_eth":120634.58746081404,"sum_total_usd":15778857.623266004,"usd_percentile_rank":49,"wallet_count":34394},{"max_total_eth":0.3590272435485068,"max_total_usd":439.3933832879396,"min_total_eth":0.09998761813224973,"min_total_usd":409.8654626154198,"sum_total_eth":103666.01983624972,"sum_total_usd":14592799.674993549,"usd_percentile_rank":50,"wallet_count":34394},{"max_total_eth":0.33150286992719846,"max_total_usd":406.9732169843129,"min_total_eth":0.09498348398158969,"min_total_usd":380.099663615873,"sum_total_eth":106645.9291386015,"sum_total_usd":13533724.210490745,"usd_percentile_rank":51,"wallet_count":34394},{"max_total_eth":0.30705182904341055,"max_total_usd":377.1317605784596,"min_total_eth":0.08715776622511269,"min_total_usd":351.3062059733271,"sum_total_eth":80763.84442257194,"sum_total_usd":12522639.696269125,"usd_percentile_rank":52,"wallet_count":34394},{"max_total_eth":0.2865276390131416,"max_total_usd":348.53563820274263,"min_total_eth":0.0800588735053966,"min_total_usd":325.56905531604156,"sum_total_eth":101905.9310319975,"sum_total_usd":11586395.344105689,"usd_percentile_rank":53,"wallet_count":34394},{"max_total_eth":0.26485488629493864,"max_total_usd":323.3786201310035,"min_total_eth":0.07511959546772405,"min_total_usd":303.1564740060986,"sum_total_eth":88522.44490698614,"sum_total_usd":10771282.374115631,"usd_percentile_rank":54,"wallet_count":34394},{"max_total_eth":0.24795770384993657,"max_total_usd":301.00041561861195,"min_total_eth":0.06967027871003917,"min_total_usd":280.73188890622623,"sum_total_eth":122835.4647399569,"sum_total_usd":10005968.357556088,"usd_percentile_rank":55,"wallet_count":34394},{"max_total_eth":0.22975589053461257,"max_total_usd":278.55432928870124,"min_total_eth":0.064921192997774,"min_total_usd":259.5055340536715,"sum_total_eth":80449.67198203637,"sum_total_usd":9247186.98123981,"usd_percentile_rank":56,"wallet_count":34394},{"max_total_eth":0.21356428833959554,"max_total_usd":257.5937948701783,"min_total_eth":0.05999863582782759,"min_total_usd":240.48820952967694,"sum_total_eth":122934.55254423879,"sum_total_usd":8558497.611379912,"usd_percentile_rank":57,"wallet_count":34394},{"max_total_eth":0.2002485405268799,"max_total_usd":238.57573625070884,"min_total_eth":0.054151409604322805,"min_total_usd":223.6521002926017,"sum_total_eth":102661.72672281593,"sum_total_usd":7943502.59087346,"usd_percentile_rank":58,"wallet_count":34394},{"max_total_eth":0.18757602852587862,"max_total_usd":222.07635933483056,"min_total_eth":0.05000683904108725,"min_total_usd":208.8912801438126,"sum_total_eth":113971.21218968631,"sum_total_usd":7403865.507185815,"usd_percentile_rank":59,"wallet_count":34394},{"max_total_eth":0.1717278862631761,"max_total_usd":207.47507865172165,"min_total_eth":0.049256471207859934,"min_total_usd":196.26306218400586,"sum_total_eth":109596.01449820619,"sum_total_usd":6944128.892844545,"usd_percentile_rank":60,"wallet_count":34394},{"max_total_eth":0.16148694219583737,"max_total_usd":194.8471244037736,"min_total_eth":0.045437735455060156,"min_total_usd":181.14865035489936,"sum_total_eth":53837.63143096136,"sum_total_usd":6468270.921745539,"usd_percentile_rank":61,"wallet_count":34394},{"max_total_eth":0.1495215891156541,"max_total_usd":179.62101640034913,"min_total_eth":0.04050941663826013,"min_total_usd":165.94511786147774,"sum_total_eth":88503.9109611347,"sum_total_usd":5940762.067729537,"usd_percentile_rank":62,"wallet_count":34394},{"max_total_eth":0.13671308723908523,"max_total_usd":164.5168518088265,"min_total_eth":0.039405159867639546,"min_total_usd":152.66626684161747,"sum_total_eth":57567.87864103218,"sum_total_usd":5452119.252146289,"usd_percentile_rank":63,"wallet_count":34394},{"max_total_eth":0.1264379525682576,"max_total_usd":151.354389249717,"min_total_eth":0.0350757077717996,"min_total_usd":139.37014116654333,"sum_total_eth":58655.59512445396,"sum_total_usd":4998537.632674409,"usd_percentile_rank":64,"wallet_count":34394},{"max_total_eth":0.11549542158451112,"max_total_usd":138.0956483157875,"min_total_eth":0.03028598291175983,"min_total_usd":127.32306112745407,"sum_total_eth":48853.396893822246,"sum_total_usd":4559855.462247477,"usd_percentile_rank":65,"wallet_count":34394},{"max_total_eth":0.10570993435176174,"max_total_usd":126.20220726212783,"min_total_eth":0.029748043822255564,"min_total_usd":116.88875331575304,"sum_total_eth":73551.76909189051,"sum_total_usd":4176635.6500141486,"usd_percentile_rank":66,"wallet_count":34394},{"max_total_eth":0.09946662961998218,"max_total_usd":115.87737881693702,"min_total_eth":0.02717321872482371,"min_total_usd":107.35648838437471,"sum_total_eth":48718.27210532414,"sum_total_usd":3837435.3503919505,"usd_percentile_rank":67,"wallet_count":34394},{"max_total_eth":6.601332801608745,"max_total_usd":106.3812343073833,"min_total_eth":0.02500191570130654,"min_total_usd":98.74496549505693,"sum_total_eth":154708.04657211728,"sum_total_usd":3526770.5440498404,"usd_percentile_rank":68,"wallet_count":34394},{"max_total_eth":0.0818922442814208,"max_total_usd":97.86281007981165,"min_total_eth":0.021935689069968005,"min_total_usd":89.96066543986093,"sum_total_eth":41719.52644344961,"sum_total_usd":3229691.995995352,"usd_percentile_rank":69,"wallet_count":34394},{"max_total_eth":0.07660380602511471,"max_total_usd":89.03221674528072,"min_total_eth":0.019999999999999997,"min_total_usd":81.10925701525987,"sum_total_eth":58753.56290338222,"sum_total_usd":2924306.980804894,"usd_percentile_rank":70,"wallet_count":34394},{"max_total_eth":0.06850971410872829,"max_total_usd":80.33920605624748,"min_total_eth":0.018949386460759193,"min_total_usd":73.33915853380995,"sum_total_eth":56874.97741341225,"sum_total_usd":2644041.39001732,"usd_percentile_rank":71,"wallet_count":34394},{"max_total_eth":0.060680749843106264,"max_total_usd":72.56712550226312,"min_total_eth":0.016966110524497098,"min_total_usd":65.9745809027111,"sum_total_eth":46086.428312872726,"sum_total_usd":2378552.6541429157,"usd_percentile_rank":72,"wallet_count":34394},{"max_total_eth":0.05592222704390301,"max_total_usd":65.3569700336814,"min_total_eth":0.015004806381596824,"min_total_usd":60.126802840041655,"sum_total_eth":52370.592902902434,"sum_total_usd":2158137.3828182025,"usd_percentile_rank":73,"wallet_count":34394},{"max_total_eth":0.05159817133475797,"max_total_usd":59.55058451392498,"min_total_eth":0.013859317525031343,"min_total_usd":54.06209375152635,"sum_total_eth":61440.05548160138,"sum_total_usd":1954027.9466889969,"usd_percentile_rank":74,"wallet_count":34394},{"max_total_eth":0.8968965980015698,"max_total_usd":53.48487175807118,"min_total_eth":0.012664167885424463,"min_total_usd":48.831541066583085,"sum_total_eth":136365.3645030409,"sum_total_usd":1758037.736521097,"usd_percentile_rank":75,"wallet_count":34394},{"max_total_eth":0.05785327266690096,"max_total_usd":48.32912379183353,"min_total_eth":0.010010673860511217,"min_total_usd":43.89174948689505,"sum_total_eth":55994.477376687166,"sum_total_usd":1584609.0185686264,"usd_percentile_rank":76,"wallet_count":34394},{"max_total_eth":0.04153907578074032,"max_total_usd":43.42842978343248,"min_total_eth":0.009974232304711112,"min_total_usd":39.618144292456826,"sum_total_eth":59287.62470869971,"sum_total_usd":1424724.9057781012,"usd_percentile_rank":77,"wallet_count":34394},{"max_total_eth":0.034795526591456585,"max_total_usd":39.22040891178389,"min_total_eth":0.009008860801688216,"min_total_usd":35.46583279580243,"sum_total_eth":47133.69708545701,"sum_total_usd":1285166.3530753073,"usd_percentile_rank":78,"wallet_count":34394},{"max_total_eth":0.029987022017024897,"max_total_usd":35.048746454743146,"min_total_eth":0.00797323758558232,"min_total_usd":31.859043659000374,"sum_total_eth":31446.017720939402,"sum_total_usd":1147988.6623653667,"usd_percentile_rank":79,"wallet_count":34394},{"max_total_eth":0.02664687198569373,"max_total_usd":31.5246029247747,"min_total_eth":0.0072127673500861815,"min_total_usd":28.805058971256983,"sum_total_eth":33257.665991819136,"sum_total_usd":1037667.8369382335,"usd_percentile_rank":80,"wallet_count":34394},{"max_total_eth":0.02387990398142531,"max_total_usd":28.444219931394287,"min_total_eth":0.006640986148393147,"min_total_usd":25.539919547537817,"sum_total_eth":20284.06227582391,"sum_total_usd":927304.5116973564,"usd_percentile_rank":81,"wallet_count":34394},{"max_total_eth":0.0210288726886049,"max_total_usd":25.23354908637656,"min_total_eth":0.00580200750283503,"min_total_usd":22.59120212951529,"sum_total_eth":27494.251299670752,"sum_total_usd":821333.9476767122,"usd_percentile_rank":82,"wallet_count":34394},{"max_total_eth":0.019865203982345907,"max_total_usd":22.291578698081445,"min_total_eth":0.004974037903050928,"min_total_usd":20.00792183309983,"sum_total_eth":25322.805551349844,"sum_total_usd":724989.5712755963,"usd_percentile_rank":83,"wallet_count":34394},{"max_total_eth":0.01636296133676698,"max_total_usd":19.792781479851218,"min_total_eth":0.004622617983165955,"min_total_usd":17.740211160576095,"sum_total_eth":16607.12219119719,"sum_total_usd":645326.5093780967,"usd_percentile_rank":84,"wallet_count":34394},{"max_total_eth":0.014687155796371741,"max_total_usd":17.51916420641305,"min_total_eth":0.003990009558372155,"min_total_usd":15.760094909848377,"sum_total_eth":10240.281023234114,"sum_total_usd":571336.7996853081,"usd_percentile_rank":85,"wallet_count":34394},{"max_total_eth":0.013491598220301423,"max_total_usd":15.573722633234814,"min_total_eth":0.0033941552126919385,"min_total_usd":13.58018573422435,"sum_total_eth":28551.70774011709,"sum_total_usd":501777.30027688266,"usd_percentile_rank":86,"wallet_count":34394},{"max_total_eth":0.011022939374821171,"max_total_usd":13.356705937036667,"min_total_eth":0.0030010272104891897,"min_total_usd":11.809347596057462,"sum_total_eth":14066.068647423534,"sum_total_usd":431432.2818816219,"usd_percentile_rank":87,"wallet_count":34394},{"max_total_eth":0.009998703745937483,"max_total_usd":11.645680299247962,"min_total_eth":0.002571644011816669,"min_total_usd":10.177899796485699,"sum_total_eth":14869.869189012721,"sum_total_usd":373969.71661118563,"usd_percentile_rank":88,"wallet_count":34394},{"max_total_eth":0.01814166316873762,"max_total_usd":10.044475448626534,"min_total_eth":0.002003662247307517,"min_total_usd":8.543856846852584,"sum_total_eth":27301.85863246334,"sum_total_usd":320485.6029371325,"usd_percentile_rank":89,"wallet_count":34394},{"max_total_eth":0.006998555335961545,"max_total_usd":8.385147327815252,"min_total_eth":0.0019459927445334435,"min_total_usd":7.180961487832172,"sum_total_eth":19632.236863312046,"sum_total_usd":266512.3305216718,"usd_percentile_rank":90,"wallet_count":34394},{"max_total_eth":0.00606990024535747,"max_total_usd":7.046026853614989,"min_total_eth":0.0015098942237023825,"min_total_usd":5.911866825585907,"sum_total_eth":21534.198993220478,"sum_total_usd":221598.5001596317,"usd_percentile_rank":91,"wallet_count":34394},{"max_total_eth":0.004935776017069316,"max_total_usd":5.789415602437757,"min_total_eth":0.001207279738215887,"min_total_usd":5.037684353913517,"sum_total_eth":16767.41541522769,"sum_total_usd":184115.8555781236,"usd_percentile_rank":92,"wallet_count":34394},{"max_total_eth":0.004440489446467466,"max_total_usd":5.005400502284923,"min_total_eth":0.0010378268585593076,"min_total_usd":4.50341882242761,"sum_total_eth":16438.364279217367,"sum_total_usd":163552.17670712483,"usd_percentile_rank":93,"wallet_count":34394},{"max_total_eth":0.003507193862128165,"max_total_usd":4.4480411024774975,"min_total_eth":0.0009972029775833606,"min_total_usd":4.147272871004118,"sum_total_eth":6683.016476826415,"sum_total_usd":147531.81505238803,"usd_percentile_rank":94,"wallet_count":34394},{"max_total_eth":3.8766326324340463,"max_total_usd":4.11810767889172,"min_total_eth":0.0008919321994793005,"min_total_usd":3.5773777839615537,"sum_total_eth":13278.133465145758,"sum_total_usd":135294.08522777777,"usd_percentile_rank":95,"wallet_count":34394},{"max_total_eth":0.00280328377099473,"max_total_usd":3.4598993428071587,"min_total_eth":0.0007,"min_total_usd":2.6913730487232623,"sum_total_eth":6223.3321446674945,"sum_total_usd":105875.08967543312,"usd_percentile_rank":96,"wallet_count":34394},{"max_total_eth":0.001999999821779107,"max_total_usd":2.6082907814226495,"min_total_eth":0.0005,"min_total_usd":2.147579114427879,"sum_total_eth":3270.6015096158667,"sum_total_usd":80288.10973159291,"usd_percentile_rank":97,"wallet_count":34394},{"max_total_eth":0.0008175938018347044,"max_total_usd":2.120766589578431,"min_total_eth":0.0004910864606518688,"min_total_usd":2.040482617170749,"sum_total_eth":904.6318797690784,"sum_total_usd":71604.94286294442,"usd_percentile_rank":98,"wallet_count":34394},{"max_total_eth":0.0016265604625785622,"max_total_usd":2.0337252873171465,"min_total_eth":0.00042834432923509436,"min_total_usd":1.6662618950504353,"sum_total_eth":3162.677841316342,"sum_total_usd":66003.3004176363,"usd_percentile_rank":99,"wallet_count":34394},{"max_total_eth":0.04782224028322325,"max_total_usd":1.5778297976272884,"min_total_eth":0.0003,"min_total_usd":1.0117788235176601,"sum_total_eth":2563.529882179042,"sum_total_usd":43493.252361727325,"usd_percentile_rank":100,"wallet_count":34394}],"metadata":{"column_names":["usd_percentile_rank","wallet_count","min_total_usd","max_total_usd","min_total_eth","max_total_eth","sum_total_usd","sum_total_eth"],"column_types":["bigint","bigint","double","double","double","double","double","double"],"row_count":100,"result_set_bytes":12361,"total_row_count":100,"total_result_set_bytes":6400,"datapoint_count":800,"pending_time_millis":9221,"execution_time_millis":23237}}}
+{
+  "execution_id": "01K61WY3S69HYAHY3CT2WVSVRN",
+  "query_id": 5851339,
+  "is_execution_finished": true,
+  "state": "QUERY_STATE_COMPLETED",
+  "submitted_at": "2025-09-26T02:16:49.193146Z",
+  "expires_at": "2025-12-25T02:19:20.634139Z",
+  "execution_started_at": "2025-09-26T02:19:09.476494Z",
+  "execution_ended_at": "2025-09-26T02:19:20.634133Z",
+  "result": {
+    "rows": [
+      {
+        "max_total_eth": 5753.328657396967,
+        "max_total_usd": 6248117.405517017,
+        "min_total_eth": 388.44751708151205,
+        "min_total_usd": 1223868.613408228,
+        "sum_total_eth": 20218758.215656795,
+        "sum_total_usd": 20116183236.898136,
+        "usd_percentile_rank": 1,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 2163.072419342185,
+        "max_total_usd": 1146004.9292666023,
+        "min_total_eth": 224.2239803876934,
+        "min_total_usd": 733031.7217105812,
+        "sum_total_eth": 7220621.384175461,
+        "sum_total_usd": 7061986197.905765,
+        "usd_percentile_rank": 2,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 1028.4181115945523,
+        "max_total_usd": 705301.5658898574,
+        "min_total_eth": 157.20891886395688,
+        "min_total_usd": 525976.8263806463,
+        "sum_total_eth": 5615533.260284469,
+        "sum_total_usd": 4708182004.876714,
+        "usd_percentile_rank": 3,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 833.4526988665277,
+        "max_total_usd": 511774.55318141653,
+        "min_total_eth": 120.39991010406267,
+        "min_total_usd": 410931.05429105007,
+        "sum_total_eth": 4148284.086515941,
+        "sum_total_usd": 3557330449.1651063,
+        "usd_percentile_rank": 4,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 570.7235054668234,
+        "max_total_usd": 402515.0010415974,
+        "min_total_eth": 97.09617761519837,
+        "min_total_usd": 336116.4184593952,
+        "sum_total_eth": 3998829.2465591487,
+        "sum_total_usd": 2854166491.984451,
+        "usd_percentile_rank": 5,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 328.31767319717835,
+        "max_total_usd": 329760.2078815573,
+        "min_total_eth": 80.90926615817985,
+        "min_total_usd": 281479.1624154095,
+        "sum_total_eth": 2592412.13061148,
+        "sum_total_usd": 2365849630.0132995,
+        "usd_percentile_rank": 6,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 372.39474766895034,
+        "max_total_usd": 276880.5879412583,
+        "min_total_eth": 68.32580515875237,
+        "min_total_usd": 240507.7657905528,
+        "sum_total_eth": 2959889.937117981,
+        "sum_total_usd": 2003167778.3535326,
+        "usd_percentile_rank": 7,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 201.2790646824741,
+        "max_total_usd": 237127.05709917707,
+        "min_total_eth": 58.86574593471983,
+        "min_total_usd": 209646.10060669988,
+        "sum_total_eth": 2474390.9085806627,
+        "sum_total_usd": 1730322509.9231665,
+        "usd_percentile_rank": 8,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 149.0738017440559,
+        "max_total_usd": 206857.86591756484,
+        "min_total_eth": 51.70460137373948,
+        "min_total_usd": 184944.3256493871,
+        "sum_total_eth": 2488771.404510217,
+        "sum_total_usd": 1517288235.4547424,
+        "usd_percentile_rank": 9,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 137.22529126353993,
+        "max_total_usd": 182686.44510783866,
+        "min_total_eth": 46.03795056521042,
+        "min_total_usd": 164470.93714360916,
+        "sum_total_eth": 1928897.0390833789,
+        "sum_total_usd": 1345150895.9361227,
+        "usd_percentile_rank": 10,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 116.37486289214219,
+        "max_total_usd": 162616.01363174932,
+        "min_total_eth": 41.05674523303368,
+        "min_total_usd": 147322.29380227928,
+        "sum_total_eth": 2126767.476030498,
+        "sum_total_usd": 1200525998.1590712,
+        "usd_percentile_rank": 11,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 118.65672419455242,
+        "max_total_usd": 145891.89115895756,
+        "min_total_eth": 36.94861364201055,
+        "min_total_usd": 133552.0325590733,
+        "sum_total_eth": 2099677.737134078,
+        "sum_total_usd": 1083396620.0135372,
+        "usd_percentile_rank": 12,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 92.93668918001386,
+        "max_total_usd": 132270.44197193472,
+        "min_total_eth": 33.811709161377955,
+        "min_total_usd": 121448.02865815665,
+        "sum_total_eth": 1339078.1337863277,
+        "sum_total_usd": 983729128.613068,
+        "usd_percentile_rank": 13,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 86.8314552295134,
+        "max_total_usd": 120269.81074486804,
+        "min_total_eth": 30.712450498626968,
+        "min_total_usd": 111280.81004909045,
+        "sum_total_eth": 1134031.7853412542,
+        "sum_total_usd": 897463461.687666,
+        "usd_percentile_rank": 14,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 79.99379777524119,
+        "max_total_usd": 110288.81155556875,
+        "min_total_eth": 27.983971360673706,
+        "min_total_usd": 102240.67639340147,
+        "sum_total_eth": 1060131.2350064088,
+        "sum_total_usd": 823877204.8154688,
+        "usd_percentile_rank": 15,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 73.6268410724495,
+        "max_total_usd": 101350.19407734642,
+        "min_total_eth": 25.99574370446366,
+        "min_total_usd": 94283.74182526881,
+        "sum_total_eth": 1154042.6148093021,
+        "sum_total_usd": 758383096.7796956,
+        "usd_percentile_rank": 16,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 67.7947496656117,
+        "max_total_usd": 93561.99166801038,
+        "min_total_eth": 23.79545366321136,
+        "min_total_usd": 87427.83491727283,
+        "sum_total_eth": 1681187.449120942,
+        "sum_total_usd": 701987195.2373891,
+        "usd_percentile_rank": 17,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 62.459947352527415,
+        "max_total_usd": 86768.10826930638,
+        "min_total_eth": 22.16207025897603,
+        "min_total_usd": 81335.16085726608,
+        "sum_total_eth": 1182149.5238280115,
+        "sum_total_usd": 651984703.8051256,
+        "usd_percentile_rank": 18,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 59.487686805148606,
+        "max_total_usd": 80734.32296840465,
+        "min_total_eth": 20.4412295936138,
+        "min_total_usd": 75758.72593760621,
+        "sum_total_eth": 1113361.6793557587,
+        "sum_total_usd": 606790855.5643309,
+        "usd_percentile_rank": 19,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 52.0730539533699,
+        "max_total_usd": 75226.9166745226,
+        "min_total_eth": 19.24571462820907,
+        "min_total_usd": 70722.2750097761,
+        "sum_total_eth": 939411.7534835013,
+        "sum_total_usd": 566065681.7442257,
+        "usd_percentile_rank": 20,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 48.793147502847106,
+        "max_total_usd": 70241.89590991386,
+        "min_total_eth": 17.876351772751388,
+        "min_total_usd": 66146.33617610653,
+        "sum_total_eth": 1153627.7017680237,
+        "sum_total_usd": 528961284.8804168,
+        "usd_percentile_rank": 21,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 47.11157596644122,
+        "max_total_usd": 65712.246117347,
+        "min_total_eth": 16.654608581275347,
+        "min_total_usd": 62043.20045845489,
+        "sum_total_eth": 1086250.946959228,
+        "sum_total_usd": 495701312.1971216,
+        "usd_percentile_rank": 22,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 44.01330177103115,
+        "max_total_usd": 61624.268083050185,
+        "min_total_eth": 15.643894074121407,
+        "min_total_usd": 58324.28871093498,
+        "sum_total_eth": 707979.44108567,
+        "sum_total_usd": 465324879.03087336,
+        "usd_percentile_rank": 23,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 40.479484624362776,
+        "max_total_usd": 57967.57087704999,
+        "min_total_eth": 14.694170478641997,
+        "min_total_usd": 54873.07863086616,
+        "sum_total_eth": 769676.6524245857,
+        "sum_total_usd": 437605118.4867131,
+        "usd_percentile_rank": 24,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 38.965892570644485,
+        "max_total_usd": 54559.67339350077,
+        "min_total_eth": 13.866980498457776,
+        "min_total_usd": 51782.26077472289,
+        "sum_total_eth": 844269.969462007,
+        "sum_total_usd": 412541439.675455,
+        "usd_percentile_rank": 25,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 36.51939583897664,
+        "max_total_usd": 51487.57489518782,
+        "min_total_eth": 13.041889149178395,
+        "min_total_usd": 48993.17919313741,
+        "sum_total_eth": 818310.6857819684,
+        "sum_total_usd": 389667156.60388595,
+        "usd_percentile_rank": 26,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 35.07738939370326,
+        "max_total_usd": 48743.485505331395,
+        "min_total_eth": 12.310342338553328,
+        "min_total_usd": 46400.90271729947,
+        "sum_total_eth": 748549.4563909894,
+        "sum_total_usd": 369012181.4364741,
+        "usd_percentile_rank": 27,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 32.744927112503206,
+        "max_total_usd": 46145.18985503987,
+        "min_total_eth": 11.630157434827193,
+        "min_total_usd": 43953.73315638503,
+        "sum_total_eth": 1015800.8851085657,
+        "sum_total_usd": 349427735.65221083,
+        "usd_percentile_rank": 28,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 31.58409454828291,
+        "max_total_usd": 43729.619114573485,
+        "min_total_eth": 11.002130413081119,
+        "min_total_usd": 41782.553637399185,
+        "sum_total_eth": 904911.1674203746,
+        "sum_total_usd": 331790557.15417415,
+        "usd_percentile_rank": 29,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 29.826323294903496,
+        "max_total_usd": 41580.13580321141,
+        "min_total_eth": 10.42305761935208,
+        "min_total_usd": 39749.82178361483,
+        "sum_total_eth": 636799.4075970174,
+        "sum_total_usd": 315494350.50176543,
+        "usd_percentile_rank": 30,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 28.84810325086617,
+        "max_total_usd": 39548.992134542874,
+        "min_total_eth": 9.974227212039498,
+        "min_total_usd": 37833.654300067195,
+        "sum_total_eth": 694092.5374862173,
+        "sum_total_usd": 300076260.8000236,
+        "usd_percentile_rank": 31,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 27.627994484859634,
+        "max_total_usd": 37653.48209131217,
+        "min_total_eth": 9.407561841597085,
+        "min_total_usd": 36037.453560320195,
+        "sum_total_eth": 815333.2696974394,
+        "sum_total_usd": 285904486.0385854,
+        "usd_percentile_rank": 32,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 26.54282192789928,
+        "max_total_usd": 35865.83200131127,
+        "min_total_eth": 8.945979159847134,
+        "min_total_usd": 34357.25618920034,
+        "sum_total_eth": 690999.6564922819,
+        "sum_total_usd": 272404508.92724156,
+        "usd_percentile_rank": 33,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 24.798711417853333,
+        "max_total_usd": 34179.88259346648,
+        "min_total_eth": 8.510127436878957,
+        "min_total_usd": 32784.50537785883,
+        "sum_total_eth": 723196.8949606768,
+        "sum_total_usd": 259764476.10330173,
+        "usd_percentile_rank": 34,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 23.84723242819148,
+        "max_total_usd": 32625.80082492007,
+        "min_total_eth": 8.103392096308237,
+        "min_total_usd": 31347.008506262075,
+        "sum_total_eth": 538927.2594123314,
+        "sum_total_usd": 248202462.72941333,
+        "usd_percentile_rank": 35,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 22.878476867566302,
+        "max_total_usd": 31203.19747136445,
+        "min_total_eth": 7.799786142688422,
+        "min_total_usd": 30007.416650091593,
+        "sum_total_eth": 1134368.0276260257,
+        "sum_total_usd": 237499777.8629947,
+        "usd_percentile_rank": 36,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 21.581922121709383,
+        "max_total_usd": 29873.63160850746,
+        "min_total_eth": 7.493106532025156,
+        "min_total_usd": 28726.203268882502,
+        "sum_total_eth": 638994.0059986543,
+        "sum_total_usd": 227304977.69617403,
+        "usd_percentile_rank": 37,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 21.161955792496443,
+        "max_total_usd": 28604.956549210387,
+        "min_total_eth": 7.102857177704835,
+        "min_total_usd": 27518.998466822533,
+        "sum_total_eth": 450570.8364540558,
+        "sum_total_usd": 217739365.37245715,
+        "usd_percentile_rank": 38,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 19.976476940048663,
+        "max_total_usd": 27406.30177761431,
+        "min_total_eth": 6.835591471872698,
+        "min_total_usd": 26402.899381251573,
+        "sum_total_eth": 561304.7471840509,
+        "sum_total_usd": 208750216.66882873,
+        "usd_percentile_rank": 39,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 19.61998984137367,
+        "max_total_usd": 26294.72925852085,
+        "min_total_eth": 6.550207248323614,
+        "min_total_usd": 25351.71795175131,
+        "sum_total_eth": 559842.6626060887,
+        "sum_total_usd": 200364853.98903346,
+        "usd_percentile_rank": 40,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 18.79079823182006,
+        "max_total_usd": 25254.47577530595,
+        "min_total_eth": 6.311758985397419,
+        "min_total_usd": 24349.592381841885,
+        "sum_total_eth": 808041.8516898741,
+        "sum_total_usd": 192444932.90648317,
+        "usd_percentile_rank": 41,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 18.138873522728396,
+        "max_total_usd": 24262.289050785825,
+        "min_total_eth": 6.025946685283485,
+        "min_total_usd": 23424.958570940293,
+        "sum_total_eth": 407994.70644521154,
+        "sum_total_usd": 185031395.46455193,
+        "usd_percentile_rank": 42,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 17.31870471399182,
+        "max_total_usd": 23331.468249654514,
+        "min_total_eth": 5.806374140132523,
+        "min_total_usd": 22534.431098807923,
+        "sum_total_eth": 446113.6449989616,
+        "sum_total_usd": 177972425.17280874,
+        "usd_percentile_rank": 43,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 16.967095566928332,
+        "max_total_usd": 22444.164450714463,
+        "min_total_eth": 5.574354270425868,
+        "min_total_usd": 21702.361149736127,
+        "sum_total_eth": 626089.4899353402,
+        "sum_total_usd": 171288591.85440603,
+        "usd_percentile_rank": 44,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 16.162404682400975,
+        "max_total_usd": 21623.14721814313,
+        "min_total_eth": 5.336698053444134,
+        "min_total_usd": 20902.806793459447,
+        "sum_total_eth": 447533.0516161872,
+        "sum_total_usd": 164985936.63021782,
+        "usd_percentile_rank": 45,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 15.403680112389246,
+        "max_total_usd": 20822.198885801918,
+        "min_total_eth": 5.095387972595045,
+        "min_total_usd": 20143.643502245814,
+        "sum_total_eth": 489641.56980384863,
+        "sum_total_usd": 158931316.26390553,
+        "usd_percentile_rank": 46,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 15.136450773452932,
+        "max_total_usd": 20066.235097218574,
+        "min_total_eth": 4.9740736597138335,
+        "min_total_usd": 19431.239141694194,
+        "sum_total_eth": 410817.92125998886,
+        "sum_total_usd": 153256953.66696808,
+        "usd_percentile_rank": 47,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 14.62233614197257,
+        "max_total_usd": 19363.189431634164,
+        "min_total_eth": 4.770218040867811,
+        "min_total_usd": 18741.84645923639,
+        "sum_total_eth": 491191.0967968203,
+        "sum_total_usd": 147823347.75953415,
+        "usd_percentile_rank": 48,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 14.141139476874754,
+        "max_total_usd": 18674.36959106103,
+        "min_total_eth": 4.605829891715585,
+        "min_total_usd": 18086.25629696269,
+        "sum_total_eth": 459984.2100694296,
+        "sum_total_usd": 142600427.07549816,
+        "usd_percentile_rank": 49,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 13.526183704403705,
+        "max_total_usd": 18020.148049721196,
+        "min_total_eth": 4.431264220659545,
+        "min_total_usd": 17459.00573269612,
+        "sum_total_eth": 481163.44442835345,
+        "sum_total_usd": 137660446.12970093,
+        "usd_percentile_rank": 50,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 13.069507952680633,
+        "max_total_usd": 17393.26341725167,
+        "min_total_eth": 4.228071023580424,
+        "min_total_usd": 16857.81827217436,
+        "sum_total_eth": 343113.7142861954,
+        "sum_total_usd": 132873017.41327342,
+        "usd_percentile_rank": 51,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 12.80037895274979,
+        "max_total_usd": 16800.843379494836,
+        "min_total_eth": 4.081434837447457,
+        "min_total_usd": 16278.118568664904,
+        "sum_total_eth": 430147.85627597966,
+        "sum_total_usd": 128323837.0572513,
+        "usd_percentile_rank": 52,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 12.168360263053346,
+        "max_total_usd": 16222.225978542867,
+        "min_total_eth": 3.9459388547731864,
+        "min_total_usd": 15727.319903350439,
+        "sum_total_eth": 447394.9914247034,
+        "sum_total_usd": 123944507.07796194,
+        "usd_percentile_rank": 53,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 11.98361741482968,
+        "max_total_usd": 15672.919266220615,
+        "min_total_eth": 3.844057546408973,
+        "min_total_usd": 15200.687843199288,
+        "sum_total_eth": 407619.70193974714,
+        "sum_total_usd": 119785881.84532347,
+        "usd_percentile_rank": 54,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 11.379215953172228,
+        "max_total_usd": 15148.461922866583,
+        "min_total_eth": 3.6705781995616076,
+        "min_total_usd": 14692.047748599749,
+        "sum_total_eth": 316358.5004196894,
+        "sum_total_usd": 115795192.25775799,
+        "usd_percentile_rank": 55,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 11.126444254570355,
+        "max_total_usd": 14639.511717609787,
+        "min_total_eth": 3.5668254684955687,
+        "min_total_usd": 14207.126559167871,
+        "sum_total_eth": 446404.7313235373,
+        "sum_total_usd": 111920249.9080286,
+        "usd_percentile_rank": 56,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 10.749988252007714,
+        "max_total_usd": 14158.399910236029,
+        "min_total_eth": 3.4251311936567994,
+        "min_total_usd": 13743.557494191005,
+        "sum_total_eth": 358555.24174499273,
+        "sum_total_usd": 108260083.90209718,
+        "usd_percentile_rank": 57,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 10.334399878576539,
+        "max_total_usd": 13698.52897146157,
+        "min_total_eth": 3.304343836860997,
+        "min_total_usd": 13306.554849497017,
+        "sum_total_eth": 360998.14949125506,
+        "sum_total_usd": 104770147.8944806,
+        "usd_percentile_rank": 58,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 10.140025057503344,
+        "max_total_usd": 13266.017464280485,
+        "min_total_eth": 3.1904298536233324,
+        "min_total_usd": 12889.325233936655,
+        "sum_total_eth": 363709.83634859184,
+        "sum_total_usd": 101478908.29659833,
+        "usd_percentile_rank": 59,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 9.647266179985944,
+        "max_total_usd": 12847.54659587529,
+        "min_total_eth": 3.0999673291578422,
+        "min_total_usd": 12492.345438415023,
+        "sum_total_eth": 346584.8771712488,
+        "sum_total_usd": 98311265.10006846,
+        "usd_percentile_rank": 60,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 9.53076454235752,
+        "max_total_usd": 12452.731630733051,
+        "min_total_eth": 3.0027477196196926,
+        "min_total_usd": 12107.515178650112,
+        "sum_total_eth": 270395.19442546304,
+        "sum_total_usd": 95277686.673026,
+        "usd_percentile_rank": 61,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 9.157313724093385,
+        "max_total_usd": 12070.674361472315,
+        "min_total_eth": 2.932379248291915,
+        "min_total_usd": 11737.841307966453,
+        "sum_total_eth": 230789.44644179862,
+        "sum_total_usd": 92380719.32764573,
+        "usd_percentile_rank": 62,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 8.907196926364659,
+        "max_total_usd": 11701.32151407022,
+        "min_total_eth": 2.8472973157279564,
+        "min_total_usd": 11378.750150834017,
+        "sum_total_eth": 253601.00346803167,
+        "sum_total_usd": 89541760.83918256,
+        "usd_percentile_rank": 63,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 8.653305804290495,
+        "max_total_usd": 11343.573265609268,
+        "min_total_eth": 2.7651436048111413,
+        "min_total_usd": 11031.624317604037,
+        "sum_total_eth": 284390.9641369508,
+        "sum_total_usd": 86817762.28730763,
+        "usd_percentile_rank": 64,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 8.441866266826638,
+        "max_total_usd": 10998.664645119103,
+        "min_total_eth": 2.689436441418735,
+        "min_total_usd": 10698.897468326246,
+        "sum_total_eth": 243363.03878800376,
+        "sum_total_usd": 84181536.00670527,
+        "usd_percentile_rank": 65,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 8.113275291378509,
+        "max_total_usd": 10665.880179957478,
+        "min_total_eth": 2.5861254073785576,
+        "min_total_usd": 10377.440072932459,
+        "sum_total_eth": 237398.627704861,
+        "sum_total_usd": 81645425.7389388,
+        "usd_percentile_rank": 66,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 7.83590592456116,
+        "max_total_usd": 10348.67185939601,
+        "min_total_eth": 2.526193551155268,
+        "min_total_usd": 10073.401784296457,
+        "sum_total_eth": 202720.32157380332,
+        "sum_total_usd": 79237788.04014178,
+        "usd_percentile_rank": 67,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 7.635177489779522,
+        "max_total_usd": 10043.309134787369,
+        "min_total_eth": 2.4681783486984044,
+        "min_total_usd": 9776.814835231611,
+        "sum_total_eth": 333221.1520068339,
+        "sum_total_usd": 76907869.75773835,
+        "usd_percentile_rank": 68,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 7.3748954338560075,
+        "max_total_usd": 9745.605661454554,
+        "min_total_eth": 2.3839997987272312,
+        "min_total_usd": 9481.777145181753,
+        "sum_total_eth": 228213.59370061697,
+        "sum_total_usd": 74603081.55325064,
+        "usd_percentile_rank": 69,
+        "wallet_count": 7760
+      },
+      {
+        "max_total_eth": 7.2885550209266485,
+        "max_total_usd": 9452.104363851433,
+        "min_total_eth": 2.3008701937575498,
+        "min_total_usd": 9203.180473253855,
+        "sum_total_eth": 224726.59957991185,
+        "sum_total_usd": 72363793.26645368,
+        "usd_percentile_rank": 70,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 7.117879101763297,
+        "max_total_usd": 9176.228916783459,
+        "min_total_eth": 2.250443339062562,
+        "min_total_usd": 8934.926785950844,
+        "sum_total_eth": 199814.0520255253,
+        "sum_total_usd": 70251742.37810923,
+        "usd_percentile_rank": 71,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 6.810857391653616,
+        "max_total_usd": 8909.327424507988,
+        "min_total_eth": 2.2147305252819662,
+        "min_total_usd": 8670.33715903974,
+        "sum_total_eth": 215406.5957147182,
+        "sum_total_usd": 68193855.74000397,
+        "usd_percentile_rank": 72,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 6.687180129018123,
+        "max_total_usd": 8645.77469792945,
+        "min_total_eth": 2.1667244954270513,
+        "min_total_usd": 8419.43166591364,
+        "sum_total_eth": 184707.7851014717,
+        "sum_total_usd": 66203782.51011383,
+        "usd_percentile_rank": 73,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 6.405635136173866,
+        "max_total_usd": 8393.194435463021,
+        "min_total_eth": 2.13693915138295,
+        "min_total_usd": 8177.132576994391,
+        "sum_total_eth": 190510.17446198117,
+        "sum_total_usd": 64276787.9268575,
+        "usd_percentile_rank": 74,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 6.255404276837259,
+        "max_total_usd": 8153.097781906792,
+        "min_total_eth": 2.1162710083034613,
+        "min_total_usd": 7938.346046257235,
+        "sum_total_eth": 245851.57630679465,
+        "sum_total_usd": 62419516.623176575,
+        "usd_percentile_rank": 75,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 6.138395885776604,
+        "max_total_usd": 7913.769291206317,
+        "min_total_eth": 2.0879431697408677,
+        "min_total_usd": 7702.102847717401,
+        "sum_total_eth": 229406.21247424887,
+        "sum_total_usd": 60576990.1197053,
+        "usd_percentile_rank": 76,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.941406067275437,
+        "max_total_usd": 7677.728989248545,
+        "min_total_eth": 2.0569614056861463,
+        "min_total_usd": 7469.770693781842,
+        "sum_total_eth": 200970.0217207518,
+        "sum_total_usd": 58758589.656780995,
+        "usd_percentile_rank": 77,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.811239449028094,
+        "max_total_usd": 7446.522146310456,
+        "min_total_eth": 2.082390764639296,
+        "min_total_usd": 7237.789881186907,
+        "sum_total_eth": 226073.68550546904,
+        "sum_total_usd": 56967696.457051635,
+        "usd_percentile_rank": 78,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.643045867439813,
+        "max_total_usd": 7216.183216084817,
+        "min_total_eth": 2.034812323914388,
+        "min_total_usd": 7013.263759709355,
+        "sum_total_eth": 264666.8326743835,
+        "sum_total_usd": 55204972.75710583,
+        "usd_percentile_rank": 79,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.482493801386003,
+        "max_total_usd": 6991.253880513408,
+        "min_total_eth": 2.0213770029546643,
+        "min_total_usd": 6787.358974643094,
+        "sum_total_eth": 218738.87685454718,
+        "sum_total_usd": 53457099.28923466,
+        "usd_percentile_rank": 80,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.354210074572548,
+        "max_total_usd": 6764.643857818248,
+        "min_total_eth": 2.004660720203686,
+        "min_total_usd": 6560.995034738389,
+        "sum_total_eth": 138366.4204595196,
+        "sum_total_usd": 51700841.70041911,
+        "usd_percentile_rank": 81,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.2143781145523445,
+        "max_total_usd": 6538.678697383147,
+        "min_total_eth": 2,
+        "min_total_usd": 6337.464416266943,
+        "sum_total_eth": 239411.42543403993,
+        "sum_total_usd": 49956545.863796376,
+        "usd_percentile_rank": 82,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 5.079836773427799,
+        "max_total_usd": 6314.200308253048,
+        "min_total_eth": 1.999812446208506,
+        "min_total_usd": 6098.259978861145,
+        "sum_total_eth": 232684.7512071749,
+        "sum_total_usd": 48154179.23424339,
+        "usd_percentile_rank": 83,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.982615291376745,
+        "max_total_usd": 6073.762700358357,
+        "min_total_eth": 1.9929331097509646,
+        "min_total_usd": 5847.1330010707225,
+        "sum_total_eth": 386473.0499447688,
+        "sum_total_usd": 46256662.10519257,
+        "usd_percentile_rank": 84,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.8218353661545,
+        "max_total_usd": 5821.716206146662,
+        "min_total_eth": 1.9142209097333562,
+        "min_total_usd": 5575.823711247319,
+        "sum_total_eth": 244862.35199161185,
+        "sum_total_usd": 44221687.74042415,
+        "usd_percentile_rank": 85,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.6847102513590935,
+        "max_total_usd": 5547.470738740059,
+        "min_total_eth": 1.8124262841906529,
+        "min_total_usd": 5278.341899548667,
+        "sum_total_eth": 197693.88146464765,
+        "sum_total_usd": 42021690.75132048,
+        "usd_percentile_rank": 86,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.801209460541252,
+        "max_total_usd": 5247.466200321302,
+        "min_total_eth": 1.6683700498328207,
+        "min_total_usd": 4965.765206959116,
+        "sum_total_eth": 557093.2843672866,
+        "sum_total_usd": 39618063.1840535,
+        "usd_percentile_rank": 87,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.391074145846872,
+        "max_total_usd": 4932.532176108886,
+        "min_total_eth": 1.547499990317902,
+        "min_total_usd": 4646.471461919854,
+        "sum_total_eth": 274274.6796363291,
+        "sum_total_usd": 37155936.85856366,
+        "usd_percentile_rank": 88,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.506760328019021,
+        "max_total_usd": 4613.854463810492,
+        "min_total_eth": 1.4325392901640468,
+        "min_total_usd": 4324.982992810077,
+        "sum_total_eth": 398151.0413683972,
+        "sum_total_usd": 34677370.210464284,
+        "usd_percentile_rank": 89,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.431380301667984,
+        "max_total_usd": 4290.861736359213,
+        "min_total_eth": 1.3487902157784815,
+        "min_total_usd": 4013.6223674094817,
+        "sum_total_eth": 420516.23524234025,
+        "sum_total_usd": 32211462.239734806,
+        "usd_percentile_rank": 90,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 4.407075967551146,
+        "max_total_usd": 3981.075072847513,
+        "min_total_eth": 1.2329719520012261,
+        "min_total_usd": 3713.443471247884,
+        "sum_total_eth": 263373.1874317356,
+        "sum_total_usd": 29840971.707095895,
+        "usd_percentile_rank": 91,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 9.564937400021973,
+        "max_total_usd": 3683.6175025164143,
+        "min_total_eth": 1.1726837221260518,
+        "min_total_usd": 3413.934464838711,
+        "sum_total_eth": 553398.7037557772,
+        "sum_total_usd": 27536241.531940985,
+        "usd_percentile_rank": 92,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 8.36007589686327,
+        "max_total_usd": 3385.6376948056813,
+        "min_total_eth": 1.083431279353451,
+        "min_total_usd": 3100.747097990898,
+        "sum_total_eth": 356066.5034049373,
+        "sum_total_usd": 25187933.615104526,
+        "usd_percentile_rank": 93,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 28.90154758922828,
+        "max_total_usd": 3065.6265159264876,
+        "min_total_eth": 0.940484178815363,
+        "min_total_usd": 2733.8046353689297,
+        "sum_total_eth": 623251.6219856228,
+        "sum_total_usd": 22555189.565024815,
+        "usd_percentile_rank": 94,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 1466.4748774232833,
+        "max_total_usd": 2691.8851391106655,
+        "min_total_eth": 0.6398236203743497,
+        "min_total_usd": 1983.751022401159,
+        "sum_total_eth": 1470107.7838179835,
+        "sum_total_usd": 18623717.096218023,
+        "usd_percentile_rank": 95,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 1336.1287525667221,
+        "max_total_usd": 1836.8038872684265,
+        "min_total_eth": 0.5712244103473028,
+        "min_total_usd": 596.8496755563855,
+        "sum_total_eth": 2914351.6917742826,
+        "sum_total_usd": 9093438.434690956,
+        "usd_percentile_rank": 96,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 492.20870903824505,
+        "max_total_usd": 502.11348882378854,
+        "min_total_eth": 2.696484541189314,
+        "min_total_usd": 124.71988071496409,
+        "sum_total_eth": 1775483.4391653126,
+        "sum_total_usd": 2113978.784747639,
+        "usd_percentile_rank": 97,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 107.3611534986607,
+        "max_total_usd": 106.27813520166262,
+        "min_total_eth": 5.75996133294956,
+        "min_total_usd": 44.99013483095796,
+        "sum_total_eth": 700627.2563846168,
+        "sum_total_usd": 551281.0366208381,
+        "usd_percentile_rank": 98,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 132.89904661295216,
+        "max_total_usd": 41.21329295956885,
+        "min_total_eth": 5.021017713939617,
+        "min_total_usd": 10.001802227966913,
+        "sum_total_eth": 337059.01815536583,
+        "sum_total_usd": 187217.22278432123,
+        "usd_percentile_rank": 99,
+        "wallet_count": 7759
+      },
+      {
+        "max_total_eth": 73.45081758834239,
+        "max_total_usd": 8.13125952816298,
+        "min_total_eth": 1.9964654574656624,
+        "min_total_usd": 1.8636989984398793,
+        "sum_total_eth": 116695.10036193604,
+        "sum_total_usd": 34909.22955517561,
+        "usd_percentile_rank": 100,
+        "wallet_count": 7759
+      }
+    ],
+    "metadata": {
+      "column_names": [
+        "usd_percentile_rank",
+        "wallet_count",
+        "min_total_usd",
+        "max_total_usd",
+        "min_total_eth",
+        "max_total_eth",
+        "sum_total_usd",
+        "sum_total_eth"
+      ],
+      "column_types": [
+        "bigint",
+        "bigint",
+        "double",
+        "double",
+        "double",
+        "double",
+        "double",
+        "double"
+      ],
+      "row_count": 100,
+      "result_set_bytes": 12039,
+      "total_row_count": 100,
+      "total_result_set_bytes": 6400,
+      "datapoint_count": 800,
+      "pending_time_millis": 140283,
+      "execution_time_millis": 11157
+    }
+  }
+}

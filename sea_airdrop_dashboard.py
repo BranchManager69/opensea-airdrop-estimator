@@ -2,6 +2,7 @@ import html
 import json
 import math
 import os
+import textwrap
 from typing import Any, Dict, List
 import time
 from dataclasses import dataclass
@@ -57,7 +58,7 @@ if "fdv_billion" not in st.session_state:
 
 
 @st.cache_data(show_spinner=False)
-def load_distribution(path_str: str) -> List[Dict[str, Any]]:
+def _load_distribution_cached(path_str: str, modified: float) -> List[Dict[str, Any]]:
     path = Path(path_str)
     if not path.exists():
         return []
@@ -70,6 +71,11 @@ def load_distribution(path_str: str) -> List[Dict[str, Any]]:
     else:
         rows = []
     return sorted(rows, key=lambda row: row.get("usd_percentile_rank", 0))
+
+
+def load_distribution(path: Path) -> List[Dict[str, Any]]:
+    modified = path.stat().st_mtime if path.exists() else 0.0
+    return _load_distribution_cached(str(path), modified)
 
 
 def estimate_og_cohort_size(distribution: List[Dict[str, Any]]) -> int:
@@ -297,6 +303,23 @@ def format_percentile_option(value: float) -> str:
     return f"Top {formatted}%"
 
 
+def snap_value_to_options(value: float, options: Iterable[float]) -> float:
+    """Return the entry in ``options`` closest to ``value``."""
+
+    option_list = list(options)
+    if not option_list:
+        return value
+    return min(option_list, key=lambda opt: abs(opt - value))
+
+
+def round_to_step(value: float, step: int) -> int:
+    return int(round(value / step) * step)
+
+
+def round_up_to_step(value: float, step: int) -> int:
+    return int(math.ceil(value / step) * step)
+
+
 def run_reveal_presentation(steps: List[tuple[str, str]], duration_seconds: int) -> None:
     """Animate the reveal timeline with a progress bar and step narration."""
 
@@ -345,6 +368,13 @@ div[data-testid="stButton"] button[kind="primary"] {
         border-radius: 18px;
         border: none;
         box-shadow: 0 15px 32px rgba(59, 130, 246, 0.32);
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
     }
     div[data-testid="stButton"] button[kind="primary"]:hover:not(:disabled) {
         box-shadow: 0 20px 36px rgba(59, 130, 246, 0.38);
@@ -469,7 +499,7 @@ cohort_selection = st.radio(
 )
 st.session_state["cohort_selection"] = cohort_selection
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
-distribution_rows = load_distribution(str(selected_cohort_conf["path"]))
+distribution_rows = load_distribution(selected_cohort_conf["path"])
 
 if description := selected_cohort_conf.get("description"):
     st.caption(description)
@@ -480,13 +510,31 @@ if not distribution_rows:
         f"Expected at {selected_cohort_conf['path']}"
     )
 
-cohort_slider_options = generate_cohort_slider_options()
-
 previous_selection = st.session_state.get("cohort_selection_prev")
 st.session_state["cohort_selection_prev"] = cohort_selection
 
 if distribution_rows:
     st.session_state["cohort_size_estimate"] = estimate_og_cohort_size(distribution_rows)
+
+cohort_estimate = st.session_state.get("cohort_size_estimate")
+
+slider_min = 50_000
+slider_mid = 100_000
+slider_max = 500_000
+
+if cohort_estimate:
+    slider_mid = round_to_step(max(slider_min, cohort_estimate), 5_000)
+    slider_max = max(
+        slider_max,
+        round_up_to_step(cohort_estimate * 1.2, 5_000),
+    )
+    slider_mid = min(slider_max, slider_mid)
+
+cohort_slider_options = generate_cohort_slider_options(
+    min_val=slider_min,
+    mid_val=slider_mid,
+    max_val=slider_max,
+)
 
 if (
     previous_selection is not None
@@ -506,7 +554,12 @@ if (
         mid_percentile = (
             band_info.get("start_percentile", 0.0) + band_info.get("end_percentile", 0.0)
         ) / 2
-        st.session_state["tier_pct"] = float(max(0.1, min(100.0, mid_percentile)))
+        percentile_options = generate_percentile_options()
+        snapped_percentile = snap_value_to_options(
+            float(max(0.1, min(100.0, mid_percentile))),
+            percentile_options,
+        )
+        st.session_state["tier_pct"] = snapped_percentile
 
 wallet_holder = st.container()
 
@@ -665,6 +718,16 @@ with st.container():
     with top_row[2]:
         st.markdown("**OG cohort size (wallets)**")
         st.caption("Estimated wallets eligible for OG rewards.")
+        if (
+            distribution_rows
+            and st.session_state.get("cohort_size_origin") != cohort_selection
+        ):
+            default_target = snap_value_to_options(
+                float(cohort_estimate or slider_mid),
+                cohort_slider_options,
+            )
+            st.session_state["cohort_size"] = int(default_target)
+            st.session_state["cohort_size_origin"] = cohort_selection
         current_cohort_value = st.session_state.get("cohort_size", 100_000)
         if current_cohort_value not in cohort_slider_options:
             nearest = min(cohort_slider_options, key=lambda opt: abs(opt - current_cohort_value))
@@ -682,6 +745,10 @@ with st.container():
         st.markdown("**Your percentile band (%)**")
         st.caption("Where you believe you sit within OGs.")
         percentile_options = generate_percentile_options()
+        current_tier_value = st.session_state.get("tier_pct", percentile_options[0])
+        if current_tier_value not in percentile_options:
+            snapped = snap_value_to_options(float(current_tier_value), percentile_options)
+            st.session_state["tier_pct"] = snapped
         tier_pct = st.select_slider(
             "Your percentile band (%)",
             options=percentile_options,
@@ -795,7 +862,7 @@ def render_hero() -> None:
     sea_amount = selected_scenario.tokens_per_wallet
 
     with hero_container:
-        st.markdown(
+        hero_html = textwrap.dedent(
             f"""
             <div style="background: radial-gradient(circle at top left, #0f172a, #1f2937); color: #ffffff; padding: 2.5rem; border-radius: 18px; text-align: center; margin-top: 1.5rem;">
                 <div style="font-size:0.85rem; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75;">Estimated payout</div>
@@ -803,9 +870,9 @@ def render_hero() -> None:
                 <div style="font-size:1.15rem; opacity:0.9;">≈ {sea_amount:,.0f} SEA at ${token_price:,.2f} per token</div>
                 <div style="margin-top:1.1rem; font-size:0.95rem; opacity:0.85;">Featured tier captures {featured_share}% of the OG pool.</div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
+        st.markdown(hero_html, unsafe_allow_html=True)
 
         insights = [
             (
@@ -824,14 +891,16 @@ def render_hero() -> None:
                 f"{format_percentile_option(tier_pct)} band",
             ),
         ]
-        insight_cards_html = "".join(
-            f"""
-            <div class='insight-card'>
-                <h4>{html.escape(label)}</h4>
-                <div class='value'>{html.escape(value)}</div>
-                <div class='hint'>{html.escape(hint)}</div>
-            </div>
-            """
+        insight_cards_html = "\n".join(
+            textwrap.dedent(
+                f"""
+                <div class='insight-card'>
+                    <h4>{html.escape(label)}</h4>
+                    <div class='value'>{html.escape(value)}</div>
+                    <div class='hint'>{html.escape(hint)}</div>
+                </div>
+                """
+            ).strip()
             for label, value, hint in insights
         )
         st.markdown(
@@ -839,19 +908,21 @@ def render_hero() -> None:
             unsafe_allow_html=True,
         )
 
-        steps_html = "".join(
-            f"""
-            <li class='stepper-item'>
-                <div class='stepper-index'>{idx}</div>
-                <div class='stepper-content'>
-                    <div class='title'>{html.escape(title)}</div>
-                    <div class='detail'>{_format_step_detail(detail)}</div>
-                </div>
-            </li>
-            """
+        steps_html = "\n".join(
+            textwrap.dedent(
+                f"""
+                <li class='stepper-item'>
+                    <div class='stepper-index'>{idx}</div>
+                    <div class='stepper-content'>
+                        <div class='title'>{html.escape(title)}</div>
+                        <div class='detail'>{_format_step_detail(detail)}</div>
+                    </div>
+                </li>
+                """
+            ).strip()
             for idx, (title, detail) in enumerate(steps_for_reveal, start=1)
         )
-        st.markdown(
+        stepper_html = textwrap.dedent(
             f"""
             <div class='stepper'>
                 <h4>How we got here</h4>
@@ -859,9 +930,9 @@ def render_hero() -> None:
                     {steps_html}
                 </ul>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
+        st.markdown(stepper_html, unsafe_allow_html=True)
 
 
 with cta_col:
