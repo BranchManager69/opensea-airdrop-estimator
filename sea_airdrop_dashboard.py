@@ -522,52 +522,47 @@ div[data-testid="stButton"] button[kind="primary"] {
         background: transparent;
         z-index: 1;
     }
-    .cohort-card {
-        min-width: 200px;
+    .cohort-timeline label[data-baseweb="radio"] > div {
+        min-width: 210px;
+        min-height: 116px;
         border-radius: 16px;
-        border: 1px solid rgba(226, 230, 239, 0.8);
+        border: 1px solid rgba(226, 230, 239, 0.85);
         background: rgba(255, 255, 255, 0.96);
-        padding: 1rem 1.2rem;
+        padding: 1rem 1.1rem;
         box-shadow: 0 10px 20px rgba(4, 17, 29, 0.08);
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 0.35rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         text-align: center;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
-    .cohort-card-title {
-        font-weight: 700;
-        font-size: 1.05rem;
+    .cohort-timeline label[data-baseweb="radio"] > div p {
+        margin: 0;
+        white-space: pre-line;
+        font-size: 0.95rem;
+        line-height: 1.3;
         color: #04111d;
+        font-weight: 600;
+    }
+    .cohort-timeline label[data-baseweb="radio"] > div p::first-line {
+        font-size: 1.05rem;
+        font-weight: 700;
         letter-spacing: 0.02em;
     }
-    .cohort-card-year {
-        font-size: 0.9rem;
-        color: #1868B7;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-    .cohort-card-metric {
-        font-size: 0.95rem;
-        color: #353840;
-    }
-    .cohort-timeline label[data-baseweb="radio"]:hover .cohort-card {
+    .cohort-timeline label[data-baseweb="radio"]:hover > div {
         transform: translateY(-6px);
         box-shadow: 0 18px 32px rgba(4, 17, 29, 0.16);
         border-color: rgba(32, 129, 226, 0.35);
     }
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card {
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div {
         background: linear-gradient(135deg, rgba(32, 129, 226, 0.95), rgba(12, 52, 93, 0.95));
         border-color: rgba(32, 129, 226, 0.7);
         box-shadow: 0 22px 40px rgba(32, 129, 226, 0.35);
     }
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-title,
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-metric {
+    .cohort-timeline label[data-baseweb="radio"] input:checked + div p {
         color: #f8fafc;
-    }
-    .cohort-timeline label[data-baseweb="radio"] input:checked + div .cohort-card-year {
-        color: #d4e7f9;
     }
     .cohort-description {
         font-size: 0.95rem;
@@ -626,11 +621,9 @@ with timeline_container:
             total = cohort_totals.get(name, 0)
             total_text = f"{total:,} wallets" if total else "Loading…"
             return (
-                "<div class='cohort-card'>"
-                f"<div class='cohort-card-title'>{conf['title']}</div>"
-                f"<div class='cohort-card-year'>{conf['timeline_label']} · {conf['tagline']}</div>"
-                f"<div class='cohort-card-metric'>{total_text}</div>"
-                "</div>"
+                f"{conf['title']}\n"
+                f"{conf['timeline_label']} · {conf['tagline']}\n"
+                f"{total_text}"
             )
 
         current_idx = cohort_names.index(cohort_selection)
