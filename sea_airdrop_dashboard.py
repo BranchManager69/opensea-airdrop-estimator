@@ -66,6 +66,14 @@ if "og_pool_pct" not in st.session_state:
 if "fdv_billion" not in st.session_state:
     st.session_state["fdv_billion"] = 4
 
+params = st.experimental_get_query_params()
+if "cohort" in params:
+    slug_param = params["cohort"][0]
+    for display_name, config in COHORT_CONFIG.items():
+        if config["slug"] == slug_param:
+            st.session_state["cohort_selection"] = display_name
+            break
+
 
 @st.cache_data(show_spinner=False)
 def _load_distribution_cached(path_str: str, modified: float) -> List[Dict[str, Any]]:
@@ -504,6 +512,9 @@ div[data-testid="stButton"] button[kind="primary"] {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1.2rem;
     }
+    .cohort-card-link {
+        text-decoration: none;
+    }
     .cohort-card {
         border-radius: 16px;
         border: 1px solid rgba(226, 230, 239, 0.85);
@@ -515,7 +526,7 @@ div[data-testid="stButton"] button[kind="primary"] {
         gap: 0.45rem;
         transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
-    .cohort-card:hover {
+    .cohort-card-link:hover .cohort-card {
         transform: translateY(-6px);
         box-shadow: 0 18px 32px rgba(4, 17, 29, 0.16);
         border-color: rgba(32, 129, 226, 0.35);
@@ -588,14 +599,6 @@ for name in cohort_names:
 
 timeline_container = st.container()
 with timeline_container:
-    st.radio(
-        "OG cohort timeline",
-        options=cohort_names,
-        index=cohort_names.index(cohort_selection),
-        horizontal=True,
-        key="cohort_radio",
-    )
-    cohort_selection = st.session_state["cohort_radio"]
     st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
     cards_html = []
     for name in cohort_names:
@@ -604,11 +607,13 @@ with timeline_container:
         total_text = f"{total:,} wallets" if total else "Loading…"
         selected_class = "selected" if name == cohort_selection else ""
         cards_html.append(
+            f"<a class='cohort-card-link' href='?cohort={conf['slug']}'>"
             f"<div class='cohort-card {selected_class}'>"
             f"<span class='cohort-card-title'>{conf['title']}</span>"
             f"<span class='cohort-card-year'>{conf['timeline_label']} · {conf['tagline']}</span>"
             f"<span class='cohort-card-metric'>{total_text}</span>"
             "</div>"
+            "</a>"
         )
     st.markdown(
         "<div class='cohort-cards-row'>" + "".join(cards_html) + "</div>",
@@ -620,9 +625,11 @@ with timeline_container:
             f"<div class='cohort-description'>{selected_conf['description']}</div>",
             unsafe_allow_html=True,
         )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.session_state["cohort_selection"] = cohort_selection
 st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
+st.experimental_set_query_params(cohort=COHORT_CONFIG[cohort_selection]["slug"])
 selected_cohort_conf = COHORT_CONFIG[cohort_selection]
 distribution_rows = cohort_distributions.get(cohort_selection, [])
 
