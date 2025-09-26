@@ -22,6 +22,10 @@ from app.data_sources import (
     fetch_wallet_report,
     load_distribution,
 )
+from app.state import (
+    bootstrap_session_state,
+    sync_cohort_selection_from_query,
+)
 from app.calculations import (
     build_heatmap_data,
     build_share_table,
@@ -42,32 +46,9 @@ st.set_page_config(
     layout="wide",
 )
 
-
-if "tier_pct" not in st.session_state:
-    st.session_state["tier_pct"] = 10.0
-if "cohort_size" not in st.session_state:
-    st.session_state["cohort_size"] = 100_000
-if "og_pool_pct" not in st.session_state:
-    st.session_state["og_pool_pct"] = 15
-if "fdv_billion" not in st.session_state:
-    st.session_state["fdv_billion"] = 4
-if "has_revealed_once" not in st.session_state:
-    st.session_state.has_revealed_once = False
-if "last_reveal_signature" not in st.session_state:
-    st.session_state.last_reveal_signature = None
-
+bootstrap_session_state()
 params = st.query_params
-slug_values = params.get("cohort")
-if isinstance(slug_values, (list, tuple)):
-    slug_param = slug_values[0] if slug_values else None
-else:
-    slug_param = slug_values
-
-if slug_param:
-    for display_name, config in COHORT_CONFIG.items():
-        if config["slug"] == slug_param:
-            st.session_state["cohort_selection"] = display_name
-            break
+sync_cohort_selection_from_query(params)
 
 def run_reveal_presentation(steps: List[tuple[str, str]], duration_seconds: int) -> None:
     """Animate the reveal timeline with a progress bar and step narration."""
