@@ -19,6 +19,8 @@ module.exports = {
         NODE_ENV: 'production',
         SHARE_SERVICE_URL: process.env.SHARE_SERVICE_URL || `http://127.0.0.1:${SHARE_PORT}`,
         SHARE_PUBLIC_BASE: process.env.SHARE_PUBLIC_BASE || SHARE_PUBLIC_URL,
+        APP_PUBLIC_BASE:
+          process.env.APP_PUBLIC_BASE || process.env.BASE_URL || process.env.SHARE_PUBLIC_BASE || SHARE_PUBLIC_URL,
       },
     },
     {
