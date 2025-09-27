@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import time
 from typing import Iterable, Tuple
 
@@ -26,7 +27,13 @@ def run_reveal_presentation(steps: Iterable[Step], duration_seconds: int) -> Non
             int(idx / total_steps * 100),
             text=title,
         )
-        narration.markdown(f"**{title}**\n\n{detail}")
+        safe_detail = html.escape(detail)
+        safe_title = html.escape(title)
+        narration.markdown(
+            f"<div class='reveal-step'><span class='step-label'>{safe_title}</span>"
+            f"<div class='step-detail'>{safe_detail}</div></div>",
+            unsafe_allow_html=True,
+        )
         time.sleep(step_duration)
 
     progress.empty()

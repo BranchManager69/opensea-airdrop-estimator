@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import textwrap
+from html import escape
 from typing import Dict, List
 
 import altair as alt
@@ -19,7 +20,28 @@ from app.ui.layout import inject_global_styles, render_header
 from app.ui.reveal import run_reveal_presentation
 from app.ui.results import render_results
 from app.ui.share import render_share_panel
-from app.ui.wallet import render_wallet_section
+from app.ui.wallet import render_wallet_breakdown, render_wallet_section
+
+
+def _build_collection_highlights(wallet_report: Dict[str, Any], limit: int = 3) -> List[str]:
+    collections = wallet_report.get("collections") or []
+    if not collections:
+        return []
+    sorted_rows = sorted(
+        collections,
+        key=lambda row: float(row.get("total_usd") or 0.0),
+        reverse=True,
+    )
+    highlights: List[str] = []
+    for row in sorted_rows[:limit]:
+        label = row.get("label") or row.get("collection") or "Unknown collection"
+        total_usd = float(row.get("total_usd") or 0.0)
+        total_eth = float(row.get("total_eth") or 0.0)
+        trades = int(float(row.get("trade_count") or 0))
+        highlights.append(
+            f"<strong>{escape(label)}</strong> — {trades} trades · Ξ{total_eth:,.2f} (≈ ${total_usd:,.0f})"
+        )
+    return highlights
 
 
 def _resolve_wallet_param() -> str | None:
@@ -187,6 +209,21 @@ def main() -> None:
                 """
             )
             st.markdown(summary_html, unsafe_allow_html=True)
+
+        collection_highlights: List[str] = []
+        if wallet_report and wallet_report.get("collections"):
+            collection_highlights = _build_collection_highlights(wallet_report)
+        if collection_highlights:
+            highlight_items = "".join(f"<li>{item}</li>" for item in collection_highlights)
+            st.markdown(
+                """
+                <div class='reveal-highlights'>
+                    <div class='reveal-highlights-title'>Your biggest plays</div>
+                    <ul>{}</ul>
+                </div>
+                """.format(highlight_items),
+                unsafe_allow_html=True,
+            )
 
         render_results(
             scenario_snapshot=scenario_snapshot,

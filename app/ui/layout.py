@@ -69,6 +69,55 @@ def inject_global_styles() -> None:
         color: #1868B7;
 }
     
+    .reveal-step {
+        background: rgba(12, 52, 93, 0.85);
+        border: 1px solid rgba(32, 129, 226, 0.25);
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 0.75rem;
+        color: #e2e8f0;
+        box-shadow: inset 0 0 15px rgba(24, 104, 183, 0.15);
+    }
+    .reveal-step .step-label {
+        display: block;
+        font-size: 0.9rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #93c5fd;
+        margin-bottom: 0.35rem;
+    }
+    .reveal-step .step-detail {
+        font-size: 1rem;
+        line-height: 1.45;
+    }
+
+    .reveal-highlights {
+        margin: 1.2rem 0;
+        padding: 1rem 1.4rem;
+        background: rgba(240, 247, 255, 0.85);
+        border: 1px solid rgba(32, 129, 226, 0.18);
+        border-radius: 16px;
+        box-shadow: 0 12px 24px rgba(4, 17, 29, 0.1);
+    }
+    .reveal-highlights-title {
+        font-size: 0.95rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #1868B7;
+        margin-bottom: 0.6rem;
+    }
+    .reveal-highlights ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.45rem;
+    }
+    .reveal-highlights li {
+        font-size: 0.95rem;
+        color: #0f172a;
+    }
+
 /* Primary CTA */
 div[data-testid="stButton"] button[kind="primary"] {
         background: linear-gradient(135deg, #2081E2, #1868B7);
