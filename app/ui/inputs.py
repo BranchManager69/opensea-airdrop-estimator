@@ -10,7 +10,6 @@ import streamlit as st
 from app.calculations import (
     format_percentile_option,
     generate_percentile_options,
-    snap_value_to_options,
 )
 
 
@@ -18,20 +17,17 @@ from app.calculations import (
 class InputsContext:
     og_pool_pct: int
     fdv_billion: float
-    cohort_size: int
     tier_pct: float
     share_options: List[float]
     fdv_sensitivity: List[float]
     clicked: bool
 
 
-def render_input_panel(*, slider_options: List[int], slider_default: int) -> InputsContext:
+def render_input_panel() -> InputsContext:
     """Render sliders, scenario toggles, and the call-to-action button."""
 
-    clicked = False
-
     with st.container():
-        top_row = st.columns(4)
+        top_row = st.columns(3)
 
         with top_row[0]:
             st.markdown("**OG/community allocation (%)**")
@@ -59,41 +55,45 @@ def render_input_panel(*, slider_options: List[int], slider_default: int) -> Inp
             )
 
         with top_row[2]:
-            st.markdown("**OG cohort size (wallets)**")
-            st.caption("Estimated wallets eligible for OG rewards.")
-            if "cohort_size" not in st.session_state:
-                snapped_default = snap_value_to_options(float(slider_default), slider_options)
-                st.session_state["cohort_size"] = int(snapped_default)
-            current_value = st.session_state["cohort_size"]
-            if current_value not in slider_options:
-                nearest = min(slider_options, key=lambda opt: abs(opt - current_value))
-                st.session_state["cohort_size"] = nearest
-                current_value = nearest
-            cohort_size = st.select_slider(
-                "OG cohort size (wallets)",
-                options=slider_options,
-                format_func=lambda val: f"{val:,}",
-                label_visibility="collapsed",
-                key="cohort_size",
-            )
-
-        with top_row[3]:
             st.markdown("**Your percentile band (%)**")
-            st.caption("Where you believe you sit within OGs.")
             percentile_options = generate_percentile_options()
             current_tier = st.session_state.get("tier_pct", percentile_options[0])
             if current_tier not in percentile_options:
-                st.session_state["tier_pct"] = snap_value_to_options(
-                    float(current_tier),
-                    percentile_options,
+                st.session_state["tier_pct"] = percentile_options[0]
+                current_tier = percentile_options[0]
+
+            auto_source = st.session_state.get("tier_pct_source", {})
+            from_wallet = bool(auto_source.get("from_wallet"))
+
+            if from_wallet:
+                st.caption(
+                    f"Auto-set from wallet history: {format_percentile_option(current_tier)}"
                 )
+                manual_override = st.checkbox(
+                    "Adjust percentile manually",
+                    value=st.session_state.get("tier_pct_manual", False),
+                    key="tier_pct_manual_toggle",
+                )
+                st.session_state["tier_pct_manual"] = manual_override
+            else:
+                st.session_state["tier_pct_manual"] = True
+                manual_override = True
+                st.caption("Choose where you believe you sit within OGs.")
+
             tier_pct = st.select_slider(
                 "Your percentile band (%)",
                 options=percentile_options,
                 format_func=format_percentile_option,
                 label_visibility="collapsed",
+                disabled=from_wallet and not manual_override,
                 key="tier_pct",
             )
+
+            if not from_wallet or manual_override:
+                st.session_state["tier_pct_source"] = {
+                    "value": tier_pct,
+                    "from_wallet": False,
+                }
 
         st.markdown("---")
 
@@ -136,7 +136,6 @@ def render_input_panel(*, slider_options: List[int], slider_default: int) -> Inp
     return InputsContext(
         og_pool_pct=og_pool_pct,
         fdv_billion=fdv_billion,
-        cohort_size=cohort_size,
         tier_pct=tier_pct,
         share_options=share_options,
         fdv_sensitivity=fdv_sensitivity,

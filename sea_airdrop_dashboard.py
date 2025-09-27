@@ -63,18 +63,30 @@ wallet_report, wallet_band = render_wallet_section(
     auto_fetch=bool(wallet_param),
 )
 
-inputs_context = render_input_panel(
-    slider_options=slider_options,
-    slider_default=slider_default,
-)
+inputs_context = render_input_panel()
 
 og_pool_pct = inputs_context.og_pool_pct
 fdv_billion = inputs_context.fdv_billion
-cohort_size = inputs_context.cohort_size
 tier_pct = inputs_context.tier_pct
 share_options = inputs_context.share_options
 fdv_sensitivity = inputs_context.fdv_sensitivity
 clicked = inputs_context.clicked
+
+if "cohort_size" not in st.session_state:
+    st.session_state["cohort_size"] = slider_default
+
+st.markdown("---")
+with st.container():
+    st.markdown("**Scenario cohort size (wallets)**")
+    st.caption("Fine-tune all cohorts by adjusting the total wallet count.")
+    cohort_size = st.select_slider(
+        "Scenario cohort size (wallets)",
+        options=slider_options,
+        format_func=lambda val: f"{val:,}",
+        value=st.session_state["cohort_size"],
+        key="cohort_size_slider",
+    )
+st.session_state["cohort_size"] = cohort_size
 
 if not share_options:
     share_options = [20, 30, 40]
@@ -385,16 +397,18 @@ if st.session_state.has_revealed_once:
         primary_label = primary_card.get("full_label", primary_label)
         primary_cohort_wallets = primary_card.get("cohort_size", primary_cohort_size)
 
-    render_share_panel(
-        current_signature=current_signature,
-        cohort_label=primary_label,
-        cohort_wallets=primary_cohort_wallets,
-        og_pool_pct=og_pool_pct,
-        fdv_billion=fdv_billion,
-        tier_pct=tier_pct,
-        featured_share=featured_share,
-        token_price=token_price,
-        scenario_usd=primary_result.usd_value,
-        scenario_tokens=primary_result.tokens_per_wallet,
-        wallet_report=wallet_report,
-    )
+    share_panel = st.container()
+    with share_panel:
+        render_share_panel(
+            current_signature=current_signature,
+            cohort_label=primary_label,
+            cohort_wallets=primary_cohort_wallets,
+            og_pool_pct=og_pool_pct,
+            fdv_billion=fdv_billion,
+            tier_pct=tier_pct,
+            featured_share=featured_share,
+            token_price=token_price,
+            scenario_usd=primary_result.usd_value,
+            scenario_tokens=primary_result.tokens_per_wallet,
+            wallet_report=wallet_report,
+        )

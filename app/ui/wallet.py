@@ -49,14 +49,22 @@ def render_wallet_section(
                     mid_percentile = (
                         band_info["start_percentile"] + band_info["end_percentile"]
                     ) / 2
-                    st.session_state["tier_pct"] = float(
-                        max(0.1, min(100.0, mid_percentile))
-                    )
+                    new_percentile = float(max(0.1, min(100.0, mid_percentile)))
+                    st.session_state["tier_pct"] = new_percentile
+                    st.session_state["tier_pct_source"] = {
+                        "value": new_percentile,
+                        "from_wallet": True,
+                    }
+                    st.session_state["tier_pct_manual"] = False
                 else:
                     st.info(
                         "This wallet’s volume falls outside the cohort size you selected. "
                         "Increase the cohort or adjust the OG definition to include it."
                     )
+                    st.session_state["tier_pct_source"] = {
+                        "value": st.session_state.get("tier_pct"),
+                        "from_wallet": False,
+                    }
                 if distribution_rows:
                     cohort_est = estimate_og_cohort_size(distribution_rows)
                     if cohort_est:

@@ -92,34 +92,33 @@ def render_share_panel(
                         )
                         st.toast("Share link copied.")
             else:
-                if st.button("Generate Sea Mom Flex", type="primary"):
-                    payload = {
-                        "wallet": wallet_address,
-                        "payoutUsd": float(scenario_usd),
-                        "payoutTokens": float(scenario_tokens),
-                        "tokenPrice": float(token_price),
-                        "cohortLabel": cohort_label,
-                        "cohortWallets": int(cohort_wallets or 0),
-                        "percentileLabel": percentile_label,
-                        "sharePct": float(featured_share),
-                        "fdvBillion": float(fdv_billion),
-                        "ogPoolPct": float(og_pool_pct),
-                        "tradeCount": trade_count,
-                        "totalEth": total_eth,
-                        "totalUsd": total_usd,
-                        "asOf": last_trade,
-                    }
-                    try:
-                        with st.spinner("Rendering your card…"):
-                            card = create_share_card(payload)
-                    except ShareServiceError as err:
-                        st.error(str(err))
-                    else:
-                        share_cache[current_signature] = card
-                        st.session_state["share_card_cache"] = share_cache
-                        st.session_state["share_card_last_id"] = card.get("id")
-                        st.toast("Share card generated!")
-                        existing_card = card
+                payload = {
+                    "wallet": wallet_address,
+                    "payoutUsd": float(scenario_usd),
+                    "payoutTokens": float(scenario_tokens),
+                    "tokenPrice": float(token_price),
+                    "cohortLabel": cohort_label,
+                    "cohortWallets": int(cohort_wallets or 0),
+                    "percentileLabel": percentile_label,
+                    "sharePct": float(featured_share),
+                    "fdvBillion": float(fdv_billion),
+                    "ogPoolPct": float(og_pool_pct),
+                    "tradeCount": trade_count,
+                    "totalEth": total_eth,
+                    "totalUsd": total_usd,
+                    "asOf": last_trade,
+                }
+                try:
+                    with st.spinner("Rendering your card…"):
+                        card = create_share_card(payload)
+                except ShareServiceError as err:
+                    st.error(str(err))
+                else:
+                    share_cache[current_signature] = card
+                    st.session_state["share_card_cache"] = share_cache
+                    st.session_state["share_card_last_id"] = card.get("id")
+                    existing_card = card
+                    st.toast("Share card generated!")
 
         with cols[1]:
             if existing_card and existing_card.get("image_url"):
