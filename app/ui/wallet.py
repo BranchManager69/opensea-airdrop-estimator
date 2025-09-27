@@ -230,6 +230,10 @@ def render_wallet_section(
                 collections_df = collections_df.copy()
                 if "collection" not in collections_df.columns:
                     collections_df["collection"] = collections_df.get("name")
+                else:
+                    for candidate in ["collection_name", "collection_slug", "project", "project_slug", "name"]:
+                        if candidate in collections_df.columns:
+                            collections_df["collection"] = collections_df["collection"].fillna(collections_df[candidate])
                 collections_df["total_usd"] = collections_df.get("total_usd", 0).astype(float)
                 collections_df["total_eth"] = collections_df.get("total_eth", 0).astype(float)
                 if "trade_count" not in collections_df.columns:
@@ -252,6 +256,10 @@ def render_wallet_section(
                 display_cols = [c for c in ["Collection", "Trades", "ETH", "USD", "% of USD"] if c in collections_df.columns]
                 if display_cols:
                     display_df = collections_df[display_cols].copy()
+                    if "Collection" in display_df.columns:
+                        if "collection_slug" in collections_df.columns:
+                            display_df["Collection"] = display_df["Collection"].fillna(collections_df["collection_slug"])
+                        display_df["Collection"] = display_df["Collection"].fillna("Unknown collection")
                     if "ETH" in display_df.columns:
                         display_df["ETH"] = display_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
                     if "USD" in display_df.columns:
