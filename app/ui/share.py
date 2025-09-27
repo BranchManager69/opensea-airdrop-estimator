@@ -86,6 +86,7 @@ def render_share_panel(
                 st.success("Share card ready!")
                 if share_url:
                     st.markdown(f"[View share page]({share_url})")
+                    st.caption(f"Share link: {share_url}")
                     if st.button("Copy share link", type="primary", key="copy-share-link"):
                         escaped = share_url.replace("'", "\'")
                         st.markdown(
