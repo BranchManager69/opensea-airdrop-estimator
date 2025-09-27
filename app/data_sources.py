@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any, Dict, List
+import json
+import time
 
 import requests
 import streamlit as st
@@ -50,18 +51,43 @@ def fetch_wallet_report(address: str) -> Dict[str, Any]:
     if not DUNE_API_KEY:
         raise RuntimeError("DUNE_API_KEY not configured")
 
-    params = {"wallet": address, "limit": 1000}
-    url = f"https://api.dune.com/api/v1/query/{DUNE_QUERY_WALLET_STATS_ID}/results"
-    response = requests.get(
-        url,
-        headers={"X-Dune-API-Key": DUNE_API_KEY},
-        params=params,
+    execution_url = f"https://api.dune.com/api/v1/query/{DUNE_QUERY_WALLET_STATS_ID}/execute"
+    headers = {
+        "X-Dune-API-Key": DUNE_API_KEY,
+        "Content-Type": "application/json",
+    }
+    execute_response = requests.post(
+        execution_url,
+        headers=headers,
+        json={"query_parameters": {"wallet": address}},
         timeout=30,
     )
-    response.raise_for_status()
-    data = response.json()
+    execute_response.raise_for_status()
+    execution_id = execute_response.json().get("execution_id")
+    if not execution_id:
+        raise RuntimeError("Failed to start Dune execution")
 
-    rows = data.get("result", {}).get("rows", [])
+    result_url = f"https://api.dune.com/api/v1/execution/{execution_id}/results"
+    rows: List[Dict[str, Any]] = []
+    for _ in range(15):
+        result_response = requests.get(
+            result_url,
+            headers={"X-Dune-API-Key": DUNE_API_KEY},
+            timeout=30,
+        )
+        result_response.raise_for_status()
+        result_payload = result_response.json()
+        state = result_payload.get("state")
+        if state == "QUERY_STATE_COMPLETED":
+            rows = result_payload.get("result", {}).get("rows", [])
+            break
+        if state in {"QUERY_STATE_FAILED", "QUERY_STATE_CANCELLED"}:
+            message = result_payload.get("message") or "Execution failed"
+            raise RuntimeError(message)
+        time.sleep(1)
+    else:
+        raise RuntimeError("Timed out waiting for Dune execution")
+
     if not rows:
         return {}
 
