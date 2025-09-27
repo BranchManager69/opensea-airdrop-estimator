@@ -2,9 +2,23 @@
 
 from __future__ import annotations
 
+import base64
+from pathlib import Path
+
 import streamlit as st
 
 from app.config import LOGOMARK_PATH
+
+
+def _logo_data_uri(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return None
+    encoded = base64.b64encode(data).decode("utf-8")
+    return f"data:image/png;base64,{encoded}"
 
 
 def render_header() -> None:
@@ -15,10 +29,10 @@ def render_header() -> None:
         logo_col, text_col = st.columns([1, 6], gap="small")
         home_link = "https://sea.mom"
         with logo_col:
-            if LOGOMARK_PATH.exists():
-                logo_src = str(LOGOMARK_PATH)
+            logo_uri = _logo_data_uri(LOGOMARK_PATH)
+            if logo_uri:
                 st.markdown(
-                    f"<a href='{home_link}' class='header-home-link'><img src='{logo_src}' width='72' alt='Sea Mom logomark'></a>",
+                    f"<a href='{home_link}' class='header-home-link'><img src='{logo_uri}' width='72' alt='Sea Mom logomark'></a>",
                     unsafe_allow_html=True,
                 )
         with text_col:
@@ -82,33 +96,33 @@ div[data-testid="stButton"] button[kind="primary"] {
         box-shadow: none;
         cursor: not-allowed;
     }
-    .wallet-lookup div[data-testid="stButton"] button {
-        background: linear-gradient(135deg, rgba(32,129,226,0.95), rgba(12,52,93,0.92));
-        color: #f8fafc;
-        font-size: 0.95rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
-        max-width: none;
-        margin: 0;
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) {
+        background: rgba(240, 247, 255, 0.72);
+        border: 1px solid rgba(32, 129, 226, 0.2);
+        border-radius: 16px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 0.8rem;
+        gap: 1rem;
     }
-    .wallet-lookup div[data-testid="stButton"] button:hover:not(:disabled) {
-        box-shadow: 0 10px 22px rgba(12, 52, 93, 0.35);
-        transform: translateY(-1px);
-    }
-    .wallet-lookup .wallet-input > div[data-baseweb="input"] {
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) div[data-baseweb="input"] {
         border-radius: 12px;
         border: 1px solid rgba(32, 129, 226, 0.18);
         box-shadow: 0 6px 16px rgba(4, 17, 29, 0.08);
     }
-    .wallet-lookup .wallet-input input {
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) input {
         font-size: 1rem;
     }
-    .wallet-lookup {
-        background: rgba(240, 247, 255, 0.72);
-        border: 1px solid rgba(32, 129, 226, 0.2);
-        border-radius: 16px;
-        padding: 1.2rem 1.4rem;
-        margin-bottom: 0.8rem;
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) div[data-testid="stButton"] button {
+        background: linear-gradient(135deg, rgba(32,129,226,0.95), rgba(12,52,93,0.92));
+        color: #f8fafc;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.4rem;
+        border-radius: 12px;
+        margin: 0;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) div[data-testid="stButton"] button:hover:not(:disabled) {
+        box-shadow: 0 10px 22px rgba(12, 52, 93, 0.35);
+        transform: translateY(-1px);
     }
     .insight-grid {
         display: flex;

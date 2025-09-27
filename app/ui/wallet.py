@@ -81,21 +81,18 @@ def render_wallet_section(
 
     with wallet_holder:
         st.markdown("**Lookup your OpenSea wallet**")
-        st.markdown("<div class='wallet-lookup'>", unsafe_allow_html=True)
         default_wallet = st.session_state.get("wallet_input", DEMO_WALLET)
         col_input, col_button = st.columns([3, 1], gap="small")
         with col_input:
-            st.markdown("<div class='wallet-input'>", unsafe_allow_html=True)
             wallet_address = st.text_input(
                 "Wallet address",
                 value=default_wallet,
                 placeholder="0x...",
                 label_visibility="collapsed",
+                key="wallet_address_input",
             )
-            st.markdown("</div>", unsafe_allow_html=True)
         with col_button:
             fetch_clicked = st.button("Fetch history")
-        st.markdown("</div>", unsafe_allow_html=True)
 
         st.session_state["wallet_input"] = wallet_address
 
