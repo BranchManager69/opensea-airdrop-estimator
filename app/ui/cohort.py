@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence
 
+import textwrap
+
 import streamlit as st
 
 from app.calculations import (
@@ -76,16 +78,18 @@ def render_scenario_cards(scenarios: Sequence[Dict[str, Any]]) -> None:
         wallets_text = scenario.get("wallets_text", "")
         band_text = scenario.get("band_text") or ""
         cards_html.append(
-            f"""
-            <div class='cohort-card scenario-card'>
-                <span class='cohort-card-title'>{scenario['title']}</span>
-                <span class='cohort-card-year'>{scenario['subtitle']}</span>
-                <div class='scenario-card-metric'>{payout_text}</div>
-                <div class='scenario-card-submetric'>{tokens_text}</div>
-                <div class='scenario-card-foot'>{wallets_text}</div>
-                {f"<div class='scenario-card-foot subtle'>{band_text}</div>" if band_text else ''}
-            </div>
-            """
+            textwrap.dedent(
+                f"""
+                <div class='cohort-card scenario-card'>
+                    <span class='cohort-card-title'>{scenario['title']}</span>
+                    <span class='cohort-card-year'>{scenario['subtitle']}</span>
+                    <div class='scenario-card-metric'>{payout_text}</div>
+                    <div class='scenario-card-submetric'>{tokens_text}</div>
+                    <div class='scenario-card-foot'>{wallets_text}</div>
+                    {f"<div class='scenario-card-foot subtle'>{band_text}</div>" if band_text else ''}
+                </div>
+                """
+            ).strip()
         )
 
     st.markdown(
