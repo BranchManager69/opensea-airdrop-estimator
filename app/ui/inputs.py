@@ -50,12 +50,21 @@ def render_input_panel() -> InputsContext:
 
     with st.expander("Personal positioning", expanded=True):
         percentile_options = generate_percentile_options()
+        auto_source = st.session_state.get("tier_pct_source", {})
+        auto_value = auto_source.get("value")
+        if auto_source.get("from_wallet") and auto_value is not None:
+            try:
+                auto_float = float(auto_value)
+            except (TypeError, ValueError):
+                auto_float = None
+            if auto_float is not None and auto_float not in percentile_options:
+                percentile_options = sorted(percentile_options + [auto_float])
+
         current_tier = st.session_state.get("tier_pct", percentile_options[0])
         if current_tier not in percentile_options:
             st.session_state["tier_pct"] = percentile_options[0]
             current_tier = percentile_options[0]
 
-        auto_source = st.session_state.get("tier_pct_source", {})
         from_wallet = bool(auto_source.get("from_wallet"))
 
         info_col, control_col = st.columns([2, 3])

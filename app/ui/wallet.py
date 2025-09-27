@@ -46,13 +46,13 @@ def render_wallet_section(
                 )
                 st.session_state["wallet_band"] = band_info
                 if band_info:
-                    mid_percentile = (
+                    midpoint = (
                         band_info["start_percentile"] + band_info["end_percentile"]
                     ) / 2
-                    new_percentile = float(max(0.1, min(100.0, mid_percentile)))
-                    st.session_state["tier_pct"] = new_percentile
+                    clamped_percentile = float(max(0.1, min(100.0, midpoint)))
+                    st.session_state["tier_pct"] = clamped_percentile
                     st.session_state["tier_pct_source"] = {
-                        "value": new_percentile,
+                        "value": clamped_percentile,
                         "from_wallet": True,
                     }
                     st.session_state["tier_pct_manual"] = False
