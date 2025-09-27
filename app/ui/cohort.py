@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from urllib.parse import quote
 from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence
 
@@ -139,7 +140,7 @@ def _build_sparkline(points: Sequence[Dict[str, Any]], highlight_pct: float | No
             "stroke='white' stroke-width='1.5'/>"
         )
 
-    return (
+    svg_markup = (
         "<svg class='scenario-card-sparkline-svg' viewBox='0 0 220 64' "
         "preserveAspectRatio='none'>"
         "<defs>"
@@ -152,6 +153,12 @@ def _build_sparkline(points: Sequence[Dict[str, Any]], highlight_pct: float | No
         f"<path d='{path_d}' fill='none' stroke='#2081E2' stroke-width='2.2' stroke-linejoin='round'/>"
         f"{highlight_markup}"
         "</svg>"
+    )
+
+    encoded = quote(svg_markup)
+    return (
+        "<img src=\"data:image/svg+xml;utf8," + encoded +
+        "\" class='scenario-card-sparkline-svg' alt='Percentile distribution sparkline'/>"
     )
 
 
