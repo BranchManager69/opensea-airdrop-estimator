@@ -29,16 +29,6 @@ def render_input_panel(*, slider_options: List[int], slider_default: int) -> Inp
     """Render sliders, scenario toggles, and the call-to-action button."""
 
     clicked = False
-    with st.container():
-        left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
-        with button_area:
-            clicked = st.button(
-                "Estimate my airdrop",
-                key="estimate_cta",
-                type="primary",
-                use_container_width=True,
-                disabled=st.session_state.has_revealed_once,
-            )
 
     with st.container():
         top_row = st.columns(4)
@@ -132,6 +122,17 @@ def render_input_panel(*, slider_options: List[int], slider_default: int) -> Inp
                 fdv_sensitivity.append(fdv_billion)
                 fdv_sensitivity = sorted(set(fdv_sensitivity))
             st.caption("Optional extra FDV points you might want to analyze later.")
+
+    with st.container():
+        left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
+        with button_area:
+            clicked = st.button(
+                "Estimate my airdrop",
+                key="estimate_cta",
+                type="primary",
+                use_container_width=True,
+                disabled=st.session_state.has_revealed_once,
+            )
 
     return InputsContext(
         og_pool_pct=og_pool_pct,
