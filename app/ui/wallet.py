@@ -247,8 +247,12 @@ def render_wallet_section(
             collections_df = pd.DataFrame(collection_rows)
             if not collections_df.empty:
                 collections_df = collections_df.copy()
-                collections_df["total_usd"] = collections_df["total_usd"].astype(float)
-                collections_df["total_eth"] = collections_df["total_eth"].astype(float)
+                if "collection" not in collections_df.columns:
+                    collections_df["collection"] = collections_df.get("name")
+                collections_df["total_usd"] = collections_df.get("total_usd", 0).astype(float)
+                collections_df["total_eth"] = collections_df.get("total_eth", 0).astype(float)
+                if "trade_count" not in collections_df.columns:
+                    collections_df["trade_count"] = collections_df.get("trade_count", 0)
                 collections_df.sort_values("total_usd", ascending=False, inplace=True)
                 if total_usd:
                     collections_df["share_usd_pct"] = (collections_df["total_usd"] / total_usd * 100).round(2)
@@ -264,17 +268,21 @@ def render_wallet_section(
                         "share_usd_pct": "% of USD",
                     }
                 )
+                display_cols = [c for c in ["Collection", "Trades", "ETH", "USD", "% of USD"] if c in collections_df.columns]
+                if display_cols:
+                    display_df = collections_df[display_cols].copy()
+                    if "ETH" in display_df.columns:
+                        display_df["ETH"] = display_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
+                    if "USD" in display_df.columns:
+                        display_df["USD"] = display_df["USD"].map(lambda v: f"${v:,.2f}")
+                    if "% of USD" in display_df.columns:
+                        display_df["% of USD"] = display_df["% of USD"].map(lambda v: f"{v:,.2f}%")
 
-                display_df = collections_df[["Collection", "Trades", "ETH", "USD", "% of USD"]].copy()
-                display_df["ETH"] = display_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
-                display_df["USD"] = display_df["USD"].map(lambda v: f"${v:,.2f}")
-                display_df["% of USD"] = display_df["% of USD"].map(lambda v: f"{v:,.2f}%")
-
-                st.markdown("**Collection mix**")
-                st.dataframe(
-                    display_df,
-                    use_container_width=True,
-                    hide_index=True,
-                )
+                    st.markdown("**Collection mix**")
+                    st.dataframe(
+                        display_df,
+                        use_container_width=True,
+                        hide_index=True,
+                    )
 
     return wallet_report, wallet_band
