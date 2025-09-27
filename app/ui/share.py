@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from typing import Any, Dict, Tuple
+from urllib.parse import quote_plus
 
 import streamlit as st
 
@@ -21,6 +23,35 @@ def _format_wallet(address: str | None) -> str:
     return value[:6] + "…" + value[-4:]
 
 
+def ensure_share_card(
+    *,
+    signature: ShareCardKey,
+    payload: Dict[str, Any],
+    show_spinner: bool = True,
+) -> Dict[str, Any] | None:
+    """Return a cached share card, creating it if required."""
+
+    share_cache: Dict[ShareCardKey, Dict[str, Any]] = st.session_state.setdefault(
+        "share_card_cache", {}
+    )
+
+    existing = share_cache.get(signature)
+    if existing:
+        return existing
+
+    spinner = st.spinner("Rendering your card…") if show_spinner else nullcontext()
+    try:
+        with spinner:
+            card = create_share_card(payload)
+    except ShareServiceError:
+        raise
+    else:
+        share_cache[signature] = card
+        st.session_state["share_card_cache"] = share_cache
+        st.session_state["share_card_last_id"] = card.get("id")
+        return card
+
+
 def render_share_panel(
     *,
     current_signature: ShareCardKey,
@@ -34,6 +65,8 @@ def render_share_panel(
     scenario_usd: float,
     scenario_tokens: float,
     wallet_report: Dict[str, Any] | None,
+    precomputed_card: Dict[str, Any] | None = None,
+    payload: Dict[str, Any] | None = None,
 ) -> None:
     """Render the share-card controls below the results section."""
 
@@ -55,7 +88,7 @@ def render_share_panel(
         return
 
     share_cache: Dict[ShareCardKey, Dict[str, Any]] = st.session_state.setdefault("share_card_cache", {})
-    existing_card = share_cache.get(current_signature)
+    existing_card = precomputed_card or share_cache.get(current_signature)
 
     summary = wallet_report.get("summary", {})
     trade_count = int(float(summary.get("trade_count") or 0))
@@ -91,8 +124,22 @@ def render_share_panel(
                             unsafe_allow_html=True,
                         )
                         st.toast("Share link copied.")
+                    tweet_text = (
+                        f"My Sea Mom projection clocks in around ${scenario_usd:,.0f}."
+                        "\nDial in your own assumptions:"
+                    )
+                    tweet_url = (
+                        "https://twitter.com/intent/tweet?text="
+                        + quote_plus(tweet_text)
+                        + "&url="
+                        + quote_plus(share_url)
+                    )
+                    st.markdown(
+                        f"<a href='{tweet_url}' target='_blank' class='tweet-button'>Tweet this flex</a>",
+                        unsafe_allow_html=True,
+                    )
             else:
-                payload = {
+                payload = payload or {
                     "wallet": wallet_address,
                     "payoutUsd": float(scenario_usd),
                     "payoutTokens": float(scenario_tokens),
@@ -109,14 +156,14 @@ def render_share_panel(
                     "asOf": last_trade,
                 }
                 try:
-                    with st.spinner("Rendering your card…"):
-                        card = create_share_card(payload)
+                    card = ensure_share_card(
+                        signature=current_signature,
+                        payload=payload,
+                        show_spinner=True,
+                    )
                 except ShareServiceError as err:
                     st.error(str(err))
                 else:
-                    share_cache[current_signature] = card
-                    st.session_state["share_card_cache"] = share_cache
-                    st.session_state["share_card_last_id"] = card.get("id")
                     existing_card = card
                     st.toast("Share card generated!")
 

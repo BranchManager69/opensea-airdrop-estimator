@@ -1,4 +1,5 @@
 import math
+import textwrap
 from typing import Any, Dict, List
 
 import altair as alt
@@ -16,7 +17,8 @@ from app.ui.cohort import build_slider_defaults, load_cohort_data, render_scenar
 from app.ui.inputs import render_input_panel
 from app.ui.wallet import render_wallet_section
 from app.ui.reveal import run_reveal_presentation
-from app.ui.share import render_share_panel
+from app.share_service import ShareServiceError
+from app.ui.share import ensure_share_card, render_share_panel
 from app.ui.results import ScenarioSnapshot, render_results
 from app.calculations import (
     build_heatmap_data,
@@ -47,6 +49,8 @@ wallet_param = wallet_param.strip() if wallet_param else None
 render_header()
 inject_global_styles()
 
+summary_placeholder = st.empty()
+
 cohort_data = load_cohort_data()
 if not cohort_data:
     st.error("No cohort distributions found. Please update the data files and refresh.")
@@ -75,18 +79,7 @@ clicked = inputs_context.clicked
 if "cohort_size" not in st.session_state:
     st.session_state["cohort_size"] = slider_default
 
-st.markdown("---")
-with st.container():
-    st.markdown("**Scenario cohort size (wallets)**")
-    st.caption("Fine-tune all cohorts by adjusting the total wallet count.")
-    cohort_size = st.select_slider(
-        "Scenario cohort size (wallets)",
-        options=slider_options,
-        format_func=lambda val: f"{val:,}",
-        value=st.session_state["cohort_size"],
-        key="cohort_size_slider",
-    )
-st.session_state["cohort_size"] = cohort_size
+cohort_size = st.session_state["cohort_size"]
 
 if not share_options:
     share_options = [20, 30, 40]
@@ -176,6 +169,8 @@ for name, data in cohort_data.items():
         "cohort_size": scenario_cohort_size,
     }
 
+    card_curve_points: List[Dict[str, float]] = []
+
     for row in data.rows:
         percentile = row.get("usd_percentile_rank")
         if percentile is None:
@@ -197,15 +192,15 @@ for name, data in cohort_data.items():
         usd_value = max(min_usd_val, max_usd_val)
         if usd_value <= 0 or percentile_val <= 0:
             continue
-        curve_rows.append(
-            {
-                "scenario": full_label,
-                "percentile": percentile_val,
-                "usd": usd_value,
-                "min_usd": min_usd_val,
-                "max_usd": max_usd_val,
-            }
-        )
+        point_payload = {
+            "scenario": full_label,
+            "percentile": percentile_val,
+            "usd": usd_value,
+            "min_usd": min_usd_val,
+            "max_usd": max_usd_val,
+        }
+        card_curve_points.append(point_payload)
+        curve_rows.append(point_payload)
 
     scenario_cards.append(
         {
@@ -220,6 +215,9 @@ for name, data in cohort_data.items():
             "usd_value": scenario_result.usd_value,
             "tokens_value": scenario_result.tokens_per_wallet,
             "full_label": full_label,
+            "curve_points": card_curve_points,
+            "highlight_mid": band_mid,
+            "highlight_usd": total_usd_snapshot if total_usd_snapshot > 0 else None,
         }
     )
 
@@ -241,6 +239,13 @@ if primary_result is None:
     )
     primary_cohort_size = cohort_size
     primary_wallets_in_tier = max(1, math.floor(primary_cohort_size * (tier_pct / 100)))
+
+primary_card = next((card for card in scenario_cards if card.get("is_primary")), None)
+primary_label = primary_full_label
+primary_cohort_wallets = primary_cohort_size
+if primary_card:
+    primary_label = primary_card.get("full_label", primary_label)
+    primary_cohort_wallets = primary_card.get("cohort_size", primary_cohort_wallets)
 
 st.session_state["scenario_bands"] = scenario_bands
 st.session_state["scenario_curves"] = curve_rows
@@ -308,6 +313,9 @@ current_signature = (
 
 reveal_duration = DEFAULT_REVEAL_DURATION
 
+prefetched_card: Dict[str, Any] | None = None
+share_payload: Dict[str, Any] | None = None
+
 if clicked:
     run_reveal_presentation(steps_for_reveal, reveal_duration)
     st.session_state.has_revealed_once = True
@@ -319,13 +327,98 @@ if st.session_state.has_revealed_once:
     if last_signature is not None and last_signature != current_signature:
         st.info("Inputs updated — the estimate refreshes instantly.")
 
+    wallet_address = st.session_state.get("wallet_address")
+    if (
+        wallet_report
+        and wallet_report.get("summary")
+        and wallet_address
+        and wallet_report.get("collections") is not None
+    ):
+        summary = wallet_report.get("summary", {})
+        trade_count = int(float(summary.get("trade_count") or 0))
+        total_eth = float(summary.get("total_eth") or 0.0)
+        total_usd = float(summary.get("total_usd") or 0.0)
+        last_trade = summary.get("last_trade") or summary.get("last_activity")
+        percentile_label = format_percentile_option(tier_pct)
+
+        share_payload = {
+            "wallet": wallet_address,
+            "payoutUsd": float(primary_result.usd_value),
+            "payoutTokens": float(primary_result.tokens_per_wallet),
+            "tokenPrice": float(token_price),
+            "cohortLabel": primary_label,
+            "cohortWallets": int(primary_cohort_wallets or 0),
+            "percentileLabel": percentile_label,
+            "sharePct": float(featured_share),
+            "fdvBillion": float(fdv_billion),
+            "ogPoolPct": float(og_pool_pct),
+            "tradeCount": trade_count,
+            "totalEth": total_eth,
+            "totalUsd": total_usd,
+            "asOf": last_trade,
+        }
+
+        try:
+            prefetched_card = ensure_share_card(
+                signature=current_signature,
+                payload=share_payload,
+                show_spinner=False,
+            )
+        except ShareServiceError as share_err:
+            st.warning(f"Share preview unavailable: {share_err}")
+            prefetched_card = None
+
+    primary_band_info = scenario_bands.get(primary_name, {})
+    start_pct = primary_band_info.get("start")
+    end_pct = primary_band_info.get("end")
+    percentile_text = None
+    if start_pct is not None and end_pct is not None:
+        percentile_text = f"{start_pct:.1f}% – {end_pct:.1f}%"
+    elif wallet_band:
+        start_pct = wallet_band.get("start_percentile")
+        end_pct = wallet_band.get("end_percentile")
+        if start_pct is not None and end_pct is not None:
+            percentile_text = f"{start_pct:.1f}% – {end_pct:.1f}%"
+
+    preview_card = prefetched_card or st.session_state.get("share_card_cache", {}).get(current_signature)
+    preview_img = preview_card.get("image_url") if preview_card else None
+    preview_link = preview_card.get("share_url") if preview_card else None
+
+    with summary_placeholder.container():
+        summary_html = textwrap.dedent(
+            f"""
+            <div class='results-banner'>
+                <div class='results-banner-metrics'>
+                    <div class='metric-block'>
+                        <div class='metric-label'>Projected payout</div>
+                        <div class='metric-value'>${primary_result.usd_value:,.0f}</div>
+                        <div class='metric-hint'>≈ {primary_result.tokens_per_wallet:,.0f} SEA @ ${token_price:,.2f}</div>
+                    </div>
+                    <div class='metric-block'>
+                        <div class='metric-label'>Percentile band</div>
+                        <div class='metric-value'>{percentile_text or "Set your percentile"}</div>
+                        <div class='metric-hint'>{primary_label}</div>
+                    </div>
+                </div>
+                <div class='results-banner-share'>
+                    {f"<img src='{preview_img}' alt='Sea Mom Flex preview' />" if preview_img else "<div class='share-placeholder'>Generate your Sea Mom Flex below.</div>"}
+                    {f"<a href='{preview_link}' class='share-link' target='_blank'>Open share page</a>" if preview_link else ""}
+                </div>
+            </div>
+            """
+        )
+        st.markdown(summary_html, unsafe_allow_html=True)
+
     render_results(
         scenario_snapshot=scenario_snapshot,
         selected_scenario=primary_result,
         reveal_signature=current_signature,
     )
 
-    render_scenario_cards(scenario_cards)
+    render_scenario_cards(
+        scenario_cards,
+        slider_options=slider_options,
+    )
 
     curve_rows_state = st.session_state.get("scenario_curves", [])
     if curve_rows_state:
@@ -390,13 +483,6 @@ if st.session_state.has_revealed_once:
 
             st.altair_chart(curve_chart, use_container_width=True)
 
-    primary_card = next((card for card in scenario_cards if card.get("is_primary")), None)
-    primary_label = primary_full_label
-    primary_cohort_wallets = primary_cohort_size
-    if primary_card:
-        primary_label = primary_card.get("full_label", primary_label)
-        primary_cohort_wallets = primary_card.get("cohort_size", primary_cohort_size)
-
     share_panel = st.container()
     with share_panel:
         render_share_panel(
@@ -411,4 +497,6 @@ if st.session_state.has_revealed_once:
             scenario_usd=primary_result.usd_value,
             scenario_tokens=primary_result.tokens_per_wallet,
             wallet_report=wallet_report,
+            precomputed_card=prefetched_card,
+            payload=share_payload,
         )

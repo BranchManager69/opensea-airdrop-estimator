@@ -216,7 +216,33 @@ def render_wallet_section(
             formatted_fee_df["% of ETH"] = formatted_fee_df["% of ETH"].map(lambda v: f"{v:,.2f}%")
             formatted_fee_df["% of USD"] = formatted_fee_df["% of USD"].map(lambda v: f"{v:,.2f}%")
 
-            st.markdown("**Fee profile**")
+            platform_pct = (platform_fee_usd / total_usd * 100) if total_usd else 0.0
+            royalty_pct = (royalty_fee_usd / total_usd * 100) if total_usd else 0.0
+            net_pct_display = max(0.0, 100.0 - platform_pct - royalty_pct)
+
+            fee_highlight = f"""
+                <div class='fee-highlight'>
+                    <div class='fee-highlight-title'>Fee profile</div>
+                    <div class='fee-highlight-grid'>
+                        <div class='fee-highlight-item'>
+                            <span class='label'>Platform</span>
+                            <span class='value'>{platform_pct:,.1f}%</span>
+                            <span class='hint'>≈ ${platform_fee_usd:,.0f}</span>
+                        </div>
+                        <div class='fee-highlight-item'>
+                            <span class='label'>Royalties</span>
+                            <span class='value'>{royalty_pct:,.1f}%</span>
+                            <span class='hint'>≈ ${royalty_fee_usd:,.0f}</span>
+                        </div>
+                        <div class='fee-highlight-item'>
+                            <span class='label'>Net to trader</span>
+                            <span class='value'>{net_pct_display:,.1f}%</span>
+                            <span class='hint'>≈ ${net_usd:,.0f}</span>
+                        </div>
+                    </div>
+                </div>
+            """
+            st.markdown(fee_highlight, unsafe_allow_html=True)
             st.dataframe(
                 formatted_fee_df,
                 use_container_width=True,
@@ -229,11 +255,12 @@ def render_wallet_section(
             if not collections_df.empty:
                 collections_df = collections_df.copy()
                 if "collection" not in collections_df.columns:
-                    collections_df["collection"] = collections_df.get("name")
+                    collections_df["collection"] = collections_df.get("label")
                 else:
-                    for candidate in ["collection_name", "collection_slug", "project", "project_slug", "name"]:
-                        if candidate in collections_df.columns:
-                            collections_df["collection"] = collections_df["collection"].fillna(collections_df[candidate])
+                    collections_df["collection"] = collections_df["collection"].fillna(collections_df.get("label"))
+                for candidate in ["collection_name", "collection_slug", "project", "project_slug", "name"]:
+                    if candidate in collections_df.columns:
+                        collections_df["collection"] = collections_df["collection"].fillna(collections_df[candidate])
                 collections_df["total_usd"] = collections_df.get("total_usd", 0).astype(float)
                 collections_df["total_eth"] = collections_df.get("total_eth", 0).astype(float)
                 if "trade_count" not in collections_df.columns:

@@ -247,6 +247,176 @@ div[data-testid="stButton"] button[kind="primary"] {
         color: #6b7280;
         font-size: 0.85rem;
     }
+    .scenario-card.selected {
+        background: linear-gradient(135deg, rgba(32, 129, 226, 0.95), rgba(12, 52, 93, 0.92));
+        color: #f8fafc;
+    }
+    .scenario-card.selected .scenario-card-submetric,
+    .scenario-card.selected .scenario-card-foot,
+    .scenario-card.selected .scenario-card-metric,
+    .scenario-card.selected .cohort-card-year,
+    .scenario-card.selected .cohort-card-title {
+        color: #f8fafc;
+    }
+    .scenario-strip {
+        margin: 2rem 0 1.25rem 0;
+        text-align: center;
+    }
+    .scenario-strip-header {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #04111d;
+    }
+    .scenario-strip-lead {
+        margin: 0.35rem auto 0;
+        max-width: 660px;
+        color: #475569;
+        font-size: 1rem;
+    }
+    .scenario-card-sparkline {
+        margin-top: 1rem;
+    }
+    .scenario-card.selected .scenario-card-sparkline-svg path[stroke] {
+        stroke: rgba(248, 250, 252, 0.92);
+    }
+    .scenario-card.selected .scenario-card-sparkline-svg circle {
+        stroke: rgba(4, 17, 29, 0.45);
+    }
+    .scenario-card-sparkline-svg {
+        width: 100%;
+        height: 64px;
+    }
+    .scenario-slider-label {
+        margin-top: 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #1868B7;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    .results-banner {
+        margin: 1rem 0 1.5rem 0;
+        padding: 1.4rem 1.8rem;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(32, 129, 226, 0.12), rgba(12, 52, 93, 0.08));
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .results-banner-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    .metric-block {
+        min-width: 180px;
+    }
+    .metric-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #0c345d;
+        margin-bottom: 0.35rem;
+    }
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #04111d;
+    }
+    .metric-hint {
+        font-size: 0.95rem;
+        color: #475569;
+        margin-top: 0.2rem;
+    }
+    .results-banner-share {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 220px;
+    }
+    .results-banner-share img {
+        max-width: 240px;
+        border-radius: 12px;
+        box-shadow: 0 14px 28px rgba(4, 17, 29, 0.18);
+    }
+    .share-placeholder {
+        width: 220px;
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 1.4rem;
+        border-radius: 12px;
+        border: 1px dashed rgba(32, 129, 226, 0.35);
+        color: #1868B7;
+        background: rgba(255, 255, 255, 0.75);
+    }
+    .share-link {
+        font-weight: 600;
+        color: #1868B7;
+        text-decoration: none;
+    }
+    .share-link:hover {
+        text-decoration: underline;
+    }
+    .tweet-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1.4rem;
+        border-radius: 999px;
+        background: #1d9bf0;
+        color: #f8fafc;
+        font-weight: 600;
+        text-decoration: none;
+        margin-top: 0.4rem;
+        box-shadow: 0 8px 20px rgba(29, 155, 240, 0.25);
+    }
+    .tweet-button:hover {
+        text-decoration: none;
+        box-shadow: 0 12px 24px rgba(29, 155, 240, 0.32);
+    }
+    .fee-highlight {
+        margin-top: 1.2rem;
+        margin-bottom: 0.6rem;
+        padding: 1.1rem 1.4rem;
+        border-radius: 14px;
+        background: rgba(226, 238, 255, 0.55);
+        border: 1px solid rgba(32, 129, 226, 0.18);
+    }
+    .fee-highlight-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #0c345d;
+        margin-bottom: 0.6rem;
+    }
+    .fee-highlight-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    .fee-highlight-item .label {
+        display: block;
+        font-size: 0.85rem;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.15rem;
+    }
+    .fee-highlight-item .value {
+        display: block;
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #04111d;
+    }
+    .fee-highlight-item .hint {
+        display: block;
+        font-size: 0.9rem;
+        color: #2563eb;
+        margin-top: 0.1rem;
+    }
         </style>
         """,
         unsafe_allow_html=True,
