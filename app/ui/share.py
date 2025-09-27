@@ -126,7 +126,7 @@ def render_share_panel(
 
         with cols[1]:
             if existing_card and existing_card.get("image_url"):
-                st.image(existing_card["image_url"], caption="Share preview", use_column_width=True)
+                st.image(existing_card["image_url"], caption="Share preview", use_container_width=True)
             else:
                 st.info("Generate a card to see the preview here.")
 

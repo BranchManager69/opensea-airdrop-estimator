@@ -122,6 +122,9 @@ def render_results(
         )
         st.markdown(stepper_html, unsafe_allow_html=True)
 
+    st.session_state["last_reveal_signature"] = reveal_signature
+    st.session_state["has_revealed_once"] = True
+
     col_a, col_b = st.columns(2)
     with col_a:
         st.markdown("**Tier share comparison**")
@@ -144,6 +147,3 @@ def render_results(
             .properties(height=260)
         )
         st.altair_chart(heatmap_chart, use_container_width=True)
-
-    st.session_state["last_reveal_signature"] = reveal_signature
-    st.session_state["has_revealed_once"] = True
