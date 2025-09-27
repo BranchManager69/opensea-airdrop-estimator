@@ -13,15 +13,20 @@ def render_header() -> None:
     header_container = st.container()
     with header_container:
         logo_col, text_col = st.columns([1, 6], gap="small")
+        home_link = "https://sea.mom"
         with logo_col:
             if LOGOMARK_PATH.exists():
-                st.image(str(LOGOMARK_PATH), width=72)
+                logo_src = str(LOGOMARK_PATH)
+                st.markdown(
+                    f"<a href='{home_link}' class='header-home-link'><img src='{logo_src}' width='72' alt='Sea Mom logomark'></a>",
+                    unsafe_allow_html=True,
+                )
         with text_col:
             st.markdown(
-                """
+                f"""
                 <div style="text-align: left;">
-                    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:1rem; justify-content:space-between;">
-                        <h1 style="margin: 0; color: #04111d;">Sea Mom</h1>
+                    <div style=\"display:flex; flex-wrap:wrap; align-items:center; gap:1rem; justify-content:space-between;\">
+                        <a href='{home_link}' class='header-home-link title'>Sea Mom</a>
                         <span style="font-size: 1rem; color: #475569; white-space: nowrap;">
                             &ldquo;See, mom? I told you those 2021 NFT flips would pay off.&rdquo;
                         </span>
@@ -38,6 +43,19 @@ def inject_global_styles() -> None:
     st.markdown(
         """
         <style>
+.header-home-link {
+        text-decoration: none;
+}
+.header-home-link.title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #04111d;
+}
+.header-home-link.title:hover {
+        color: #1868B7;
+}
+    
+/* Primary CTA */
 div[data-testid="stButton"] button[kind="primary"] {
         background: linear-gradient(135deg, #2081E2, #1868B7);
         color: #f8fafc;
@@ -63,6 +81,34 @@ div[data-testid="stButton"] button[kind="primary"] {
         background: #94a3b8;
         box-shadow: none;
         cursor: not-allowed;
+    }
+    .wallet-lookup div[data-testid="stButton"] button {
+        background: linear-gradient(135deg, rgba(32,129,226,0.95), rgba(12,52,93,0.92));
+        color: #f8fafc;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        max-width: none;
+        margin: 0;
+    }
+    .wallet-lookup div[data-testid="stButton"] button:hover:not(:disabled) {
+        box-shadow: 0 10px 22px rgba(12, 52, 93, 0.35);
+        transform: translateY(-1px);
+    }
+    .wallet-lookup .wallet-input > div[data-baseweb="input"] {
+        border-radius: 12px;
+        border: 1px solid rgba(32, 129, 226, 0.18);
+        box-shadow: 0 6px 16px rgba(4, 17, 29, 0.08);
+    }
+    .wallet-lookup .wallet-input input {
+        font-size: 1rem;
+    }
+    .wallet-lookup {
+        background: rgba(240, 247, 255, 0.72);
+        border: 1px solid rgba(32, 129, 226, 0.2);
+        border-radius: 16px;
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 0.8rem;
     }
     .insight-grid {
         display: flex;

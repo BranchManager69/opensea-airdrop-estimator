@@ -71,7 +71,6 @@ def render_wallet_section(
                         st.session_state["cohort_size_estimate"] = cohort_est
                 st.session_state["wallet_address"] = address
                 st.query_params["wallet"] = address
-                st.success("Wallet snapshot updated. Scroll down to view personalised metrics.")
         except RuntimeError as err:
             st.error(str(err))
         except requests.exceptions.RequestException as err:
@@ -82,14 +81,23 @@ def render_wallet_section(
 
     with wallet_holder:
         st.markdown("**Lookup your OpenSea wallet**")
+        st.markdown("<div class='wallet-lookup'>", unsafe_allow_html=True)
         default_wallet = st.session_state.get("wallet_input", DEMO_WALLET)
-        wallet_address = st.text_input(
-            "Wallet address",
-            value=default_wallet,
-            placeholder="0x...",
-        )
+        col_input, col_button = st.columns([3, 1], gap="small")
+        with col_input:
+            st.markdown("<div class='wallet-input'>", unsafe_allow_html=True)
+            wallet_address = st.text_input(
+                "Wallet address",
+                value=default_wallet,
+                placeholder="0x...",
+                label_visibility="collapsed",
+            )
+            st.markdown("</div>", unsafe_allow_html=True)
+        with col_button:
+            fetch_clicked = st.button("Fetch history")
+        st.markdown("</div>", unsafe_allow_html=True)
+
         st.session_state["wallet_input"] = wallet_address
-        fetch_clicked = st.button("Fetch history", type="secondary")
 
         if fetch_clicked:
             if not wallet_address:
@@ -166,88 +174,38 @@ def render_wallet_section(
                         f"- **{label}** · below the modeled volume range"
                     )
             st.markdown("\n".join(bullet_lines))
-        elif wallet_report and wallet_report.get("summary"):
-            st.info("Run the estimate above to map percentile placement across cohorts.")
-
-        fee_rows = []
-        if platform_fee_eth or platform_fee_usd:
-            fee_rows.append(
-                {
-                    "Type": "Platform",
-                    "ETH": platform_fee_eth,
-                    "USD": platform_fee_usd,
-                    "ETH %": (platform_fee_eth / total_eth * 100) if total_eth else 0.0,
-                    "USD %": (platform_fee_usd / total_usd * 100) if total_usd else 0.0,
-                }
-            )
-        if royalty_fee_eth or royalty_fee_usd:
-            fee_rows.append(
-                {
-                    "Type": "Royalties",
-                    "ETH": royalty_fee_eth,
-                    "USD": royalty_fee_usd,
-                    "ETH %": (royalty_fee_eth / total_eth * 100) if total_eth else 0.0,
-                    "USD %": (royalty_fee_usd / total_usd * 100) if total_usd else 0.0,
-                }
-            )
 
         net_eth = max(total_eth - platform_fee_eth - royalty_fee_eth, 0.0)
         net_usd = max(total_usd - platform_fee_usd - royalty_fee_usd, 0.0)
+
+        fee_cards = []
+        if platform_fee_eth or platform_fee_usd:
+            fee_cards.append(("Platform", platform_fee_eth, platform_fee_usd))
+        if royalty_fee_eth or royalty_fee_usd:
+            fee_cards.append(("Royalties", royalty_fee_eth, royalty_fee_usd))
         if total_eth or total_usd:
-            fee_rows.append(
-                {
-                    "Type": "Net to trader",
-                    "ETH": net_eth,
-                    "USD": net_usd,
-                    "ETH %": (net_eth / total_eth * 100) if total_eth else 0.0,
-                    "USD %": (net_usd / total_usd * 100) if total_usd else 0.0,
-                }
+            fee_cards.append(("Net to trader", net_eth, net_usd))
+
+        if fee_cards:
+            card_markup = "".join(
+                f"""
+                <div class='fee-highlight-item'>
+                    <span class='label'>{label}</span>
+                    <span class='value'>Ξ{eth:,.3f}</span>
+                    <span class='hint'>≈ ${usd:,.2f}</span>
+                </div>
+                """
+                for label, eth, usd in fee_cards
             )
-
-        if fee_rows:
-            fee_df = pd.DataFrame(fee_rows)
-            for column, places in [("ETH", 3), ("USD", 2), ("ETH %", 2), ("USD %", 2)]:
-                fee_df[column] = fee_df[column].round(places)
-            fee_df.rename(columns={"ETH": "ETH", "USD": "USD", "ETH %": "% of ETH", "USD %": "% of USD"}, inplace=True)
-
-            formatted_fee_df = fee_df.copy()
-            formatted_fee_df["ETH"] = formatted_fee_df["ETH"].map(lambda v: f"Ξ{v:,.3f}")
-            formatted_fee_df["USD"] = formatted_fee_df["USD"].map(lambda v: f"${v:,.2f}")
-            formatted_fee_df["% of ETH"] = formatted_fee_df["% of ETH"].map(lambda v: f"{v:,.2f}%")
-            formatted_fee_df["% of USD"] = formatted_fee_df["% of USD"].map(lambda v: f"{v:,.2f}%")
-
-            platform_pct = (platform_fee_usd / total_usd * 100) if total_usd else 0.0
-            royalty_pct = (royalty_fee_usd / total_usd * 100) if total_usd else 0.0
-            net_pct_display = max(0.0, 100.0 - platform_pct - royalty_pct)
-
             fee_highlight = f"""
                 <div class='fee-highlight'>
                     <div class='fee-highlight-title'>Fee profile</div>
                     <div class='fee-highlight-grid'>
-                        <div class='fee-highlight-item'>
-                            <span class='label'>Platform</span>
-                            <span class='value'>{platform_pct:,.1f}%</span>
-                            <span class='hint'>≈ ${platform_fee_usd:,.0f}</span>
-                        </div>
-                        <div class='fee-highlight-item'>
-                            <span class='label'>Royalties</span>
-                            <span class='value'>{royalty_pct:,.1f}%</span>
-                            <span class='hint'>≈ ${royalty_fee_usd:,.0f}</span>
-                        </div>
-                        <div class='fee-highlight-item'>
-                            <span class='label'>Net to trader</span>
-                            <span class='value'>{net_pct_display:,.1f}%</span>
-                            <span class='hint'>≈ ${net_usd:,.0f}</span>
-                        </div>
+                        {card_markup}
                     </div>
                 </div>
             """
             st.markdown(fee_highlight, unsafe_allow_html=True)
-            st.dataframe(
-                formatted_fee_df,
-                use_container_width=True,
-                hide_index=True,
-            )
 
         collection_rows = wallet_report.get("collections") or []
         if collection_rows:
