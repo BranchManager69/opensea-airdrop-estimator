@@ -9,7 +9,7 @@ import requests
 import streamlit as st
 
 from app.calculations import determine_percentile_band
-from app.config import APP_PUBLIC_BASE, DEMO_WALLET
+from app.config import APP_PUBLIC_BASE
 from app.data_sources import estimate_og_cohort_size, fetch_wallet_report
 
 
@@ -81,7 +81,7 @@ def render_wallet_section(
 
     with wallet_holder:
         st.markdown("**Lookup your OpenSea wallet**")
-        default_wallet = st.session_state.get("wallet_input", DEMO_WALLET)
+        default_wallet = st.session_state.get("wallet_input") or ""
         col_input, col_button = st.columns([3, 1], gap="small")
         with col_input:
             wallet_address = st.text_input(
