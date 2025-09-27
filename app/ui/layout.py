@@ -32,16 +32,16 @@ def render_header() -> None:
             logo_uri = _logo_data_uri(LOGOMARK_PATH)
             if logo_uri:
                 st.markdown(
-                    f"<a href='{home_link}' class='header-home-link'><img src='{logo_uri}' width='72' alt='Sea Mom logomark'></a>",
+                    f"<a href='{home_link}' target='_self' class='header-home-link'><img src='{logo_uri}' width='72' alt='Sea Mom logomark'></a>",
                     unsafe_allow_html=True,
                 )
         with text_col:
             st.markdown(
                 f"""
-                <div style="text-align: left;">
-                    <div style=\"display:flex; flex-wrap:wrap; align-items:center; gap:1rem; justify-content:space-between;\">
-                        <a href='{home_link}' class='header-home-link title'>Sea Mom</a>
-                        <span style="font-size: 1rem; color: #475569; white-space: nowrap;">
+                <div class='header-text'>
+                    <div class='header-title-row'>
+                        <a href='{home_link}' target='_self' class='header-home-link title'>Sea Mom</a>
+                        <span class='header-tagline'>
                             &ldquo;See, mom? I told you those 2021 NFT flips would pay off.&rdquo;
                         </span>
                     </div>
@@ -57,17 +57,44 @@ def inject_global_styles() -> None:
     st.markdown(
         """
         <style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+div[data-testid="stToolbar"] {display: none;}
+header[data-testid="stHeader"] {display: none;}
 .header-home-link {
-        text-decoration: none;
+        text-decoration: none !important;
+        border-bottom: none !important;
+        color: inherit;
 }
 .header-home-link.title {
         font-size: 2.4rem;
         font-weight: 700;
         color: #04111d;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
 }
 .header-home-link.title:hover {
         color: #1868B7;
 }
+    .header-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .header-title-row {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+    }
+    .header-tagline {
+        font-size: 1rem;
+        color: #475569;
+        max-width: 420px;
+        line-height: 1.4;
+    }
     
     .reveal-step {
         background: rgba(12, 52, 93, 0.85);
@@ -122,18 +149,20 @@ def inject_global_styles() -> None:
 div[data-testid="stButton"] button[kind="primary"] {
         background: linear-gradient(135deg, #2081E2, #1868B7);
         color: #f8fafc;
-        font-size: 1.08rem;
+        font-size: 1.05rem;
         font-weight: 600;
-        padding: 0.95rem 3rem;
+        padding: 1rem 2.4rem;
         border-radius: 18px;
         border: none;
         box-shadow: 0 15px 32px rgba(32, 129, 226, 0.32);
-        white-space: nowrap;
+        white-space: normal;
+        line-height: 1.25;
+        text-align: center;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 100%;
-        max-width: 420px;
+        max-width: 540px;
         margin: 0 auto;
     }
     div[data-testid="stButton"] button[kind="primary"]:hover:not(:disabled) {
@@ -152,6 +181,15 @@ div[data-testid="stButton"] button[kind="primary"] {
         padding: 1rem 1.2rem;
         margin-bottom: 0.8rem;
         gap: 1rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) > div[data-testid="column"] {
+        flex: 0 0 auto;
+    }
+    div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto;
     }
     div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) div[data-baseweb="input"] {
         border-radius: 12px;
@@ -172,6 +210,72 @@ div[data-testid="stButton"] button[kind="primary"] {
     div[data-testid="stHorizontalBlock"]:has(#wallet_address_input) div[data-testid="stButton"] button:hover:not(:disabled) {
         box-shadow: 0 10px 22px rgba(12, 52, 93, 0.35);
         transform: translateY(-1px);
+    }
+    .slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #0c345d;
+        margin-bottom: 0.35rem;
+    }
+    .slider-header .range {
+        font-weight: 500;
+        color: #475569;
+    }
+    .percentile-gauge,
+    .allocation-gauge {
+        position: relative;
+        margin-top: 0.6rem;
+        padding-top: 1.8rem;
+    }
+    .percentile-gauge-track,
+    .allocation-gauge-track {
+        position: relative;
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(148, 163, 184, 0.35), rgba(32,129,226,0.78));
+        box-shadow: inset 0 1px 3px rgba(4,17,29,0.18);
+    }
+    .percentile-gauge-marker,
+    .allocation-gauge-marker {
+        position: absolute;
+        top: 0;
+        transform: translateX(-50%);
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        pointer-events: none;
+    }
+    .percentile-gauge-marker .pin,
+    .allocation-gauge-marker .pin {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #2081E2;
+        border: 2px solid #f8fafc;
+        box-shadow: 0 0 0 4px rgba(32,129,226,0.18);
+    }
+    .percentile-gauge-marker .label,
+    .allocation-gauge-marker .label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        background: rgba(32,129,226,0.12);
+        color: #0c345d;
+        border: 1px solid rgba(32,129,226,0.25);
+        white-space: nowrap;
+    }
+    .percentile-gauge-legend,
+    .allocation-gauge-legend {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: #475569;
+        margin-top: 0.35rem;
     }
     .insight-grid {
         display: flex;

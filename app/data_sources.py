@@ -62,6 +62,10 @@ def fetch_wallet_report(address: str) -> Dict[str, Any]:
         json={"query_parameters": {"wallet": address}},
         timeout=30,
     )
+    if execute_response.status_code == 402:
+        raise RuntimeError(
+            "Dune API quota hit while fetching wallet history. Give it a minute and try again."
+        )
     execute_response.raise_for_status()
     execution_id = execute_response.json().get("execution_id")
     if not execution_id:
@@ -75,6 +79,10 @@ def fetch_wallet_report(address: str) -> Dict[str, Any]:
             headers={"X-Dune-API-Key": DUNE_API_KEY},
             timeout=30,
         )
+        if result_response.status_code == 402:
+            raise RuntimeError(
+                "Dune API quota hit while fetching wallet history. Give it a minute and try again."
+            )
         result_response.raise_for_status()
         result_payload = result_response.json()
         state = result_payload.get("state")

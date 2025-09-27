@@ -59,6 +59,11 @@ def main() -> None:
         page_title="Sea Mom",
         page_icon=resolve_page_icon(),
         layout="wide",
+        menu_items={
+            "Get Help": None,
+            "Report a bug": None,
+            "About": None,
+        },
     )
 
     bootstrap_session_state()
