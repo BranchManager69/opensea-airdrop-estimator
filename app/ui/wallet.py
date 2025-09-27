@@ -62,6 +62,7 @@ def render_wallet_section(
                     if cohort_est:
                         st.session_state["cohort_size_estimate"] = cohort_est
                 st.session_state["wallet_address"] = address
+                st.query_params["wallet"] = address
                 st.success("Wallet snapshot updated. Scroll down to view personalised metrics.")
         except RuntimeError as err:
             st.error(str(err))
@@ -88,10 +89,6 @@ def render_wallet_section(
             else:
                 perform_fetch(wallet_address)
                 st.session_state["_autofetched_wallet"] = wallet_address.lower()
-
-        normalized_wallet = wallet_address.strip()
-        if normalized_wallet:
-            st.query_params["wallet"] = normalized_wallet
 
     if auto_fetch and preset_wallet:
         normalized = preset_wallet.lower()
