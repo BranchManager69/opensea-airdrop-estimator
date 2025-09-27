@@ -1,9 +1,9 @@
-"""Cohort selection timeline and related helpers."""
+"""Cohort data helpers and scenario rendering."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence
 
 import streamlit as st
 
@@ -17,96 +17,41 @@ from app.data_sources import estimate_og_cohort_size, load_distribution
 
 
 @dataclass
-class CohortContext:
-    """Snapshot of the active cohort configuration."""
+class LoadedCohort:
+    """Loaded distribution and metadata for a cohort scenario."""
 
-    selection: str
-    distribution_rows: List[Dict[str, Any]]
+    name: str
+    rows: List[Dict[str, Any]]
     estimate: int
-    slider_options: List[int]
-    slider_mid: int
+    config: Dict[str, Any]
 
 
-def render_cohort_selector() -> CohortContext:
-    """Render cohort cards and return context needed for downstream controls."""
+def load_cohort_data() -> Dict[str, LoadedCohort]:
+    """Load every cohort distribution defined in ``COHORT_CONFIG``."""
 
-    cohort_names = list(COHORT_CONFIG.keys())
-    available_cohorts = [name for name in cohort_names if COHORT_CONFIG[name]["path"].exists()]
-
-    default_cohort = (
-        st.session_state.get("cohort_selection")
-        or (available_cohorts[0] if available_cohorts else cohort_names[0])
-    )
-    if default_cohort not in cohort_names:
-        default_cohort = cohort_names[0]
-
-    cohort_selection = st.session_state.get("cohort_selection", default_cohort)
-    if cohort_selection not in cohort_names:
-        cohort_selection = default_cohort
-
-    cohort_distributions: Dict[str, List[Dict[str, Any]]] = {}
-    cohort_totals: Dict[str, int] = {}
-    for name in cohort_names:
-        rows = load_distribution(COHORT_CONFIG[name]["path"])
-        cohort_distributions[name] = rows
-        cohort_totals[name] = estimate_og_cohort_size(rows)
-
-    timeline_container = st.container()
-    with timeline_container:
-        st.markdown("<div class='cohort-timeline'>", unsafe_allow_html=True)
-        cards_html: List[str] = []
-        for name in cohort_names:
-            conf = COHORT_CONFIG[name]
-            total = cohort_totals.get(name, 0)
-            total_text = f"{total:,} wallets" if total else "Loading…"
-            selected_class = "selected" if name == cohort_selection else ""
-            cards_html.append(
-                f"<a class='cohort-card-link' href='?cohort={conf['slug']}'>"
-                f"<div class='cohort-card {selected_class}'>"
-                f"<span class='cohort-card-title'>{conf['title']}</span>"
-                f"<span class='cohort-card-year'>{conf['timeline_label']} · {conf['tagline']}</span>"
-                f"<span class='cohort-card-metric'>{total_text}</span>"
-                "</div>"
-                "</a>"
-            )
-        st.markdown(
-            "<div class='cohort-cards-row'>" + "".join(cards_html) + "</div>",
-            unsafe_allow_html=True,
+    cohorts: Dict[str, LoadedCohort] = {}
+    for display_name, config in COHORT_CONFIG.items():
+        rows = load_distribution(config["path"])
+        estimate = estimate_og_cohort_size(rows)
+        cohorts[display_name] = LoadedCohort(
+            name=display_name,
+            rows=rows,
+            estimate=estimate,
+            config=config,
         )
-        selected_conf = COHORT_CONFIG[cohort_selection]
-        if selected_conf.get("description"):
-            st.markdown(
-                f"<div class='cohort-description'>{selected_conf['description']}</div>",
-                unsafe_allow_html=True,
-            )
-        st.markdown("</div>", unsafe_allow_html=True)
+    return cohorts
 
-    st.session_state["cohort_selection"] = cohort_selection
-    st.session_state["cohort_timeline"] = COHORT_CONFIG[cohort_selection]["timeline_label"]
 
-    distribution_rows = cohort_distributions.get(cohort_selection, [])
-    if not distribution_rows:
-        st.warning(
-            f"Percentile distribution file missing for {cohort_selection}. "
-            f"Expected at {COHORT_CONFIG[cohort_selection]['path']}"
-        )
-
-    cohort_estimate = cohort_totals.get(cohort_selection, 0)
-    if distribution_rows:
-        st.session_state["cohort_size_estimate"] = cohort_estimate
-    else:
-        cohort_estimate = st.session_state.get("cohort_size_estimate", 0)
+def build_slider_defaults(cohort: LoadedCohort) -> tuple[List[int], int]:
+    """Return slider options and a midpoint anchored to a cohort estimate."""
 
     slider_min = 50_000
     slider_mid = 100_000
     slider_max = 500_000
 
-    if cohort_estimate:
-        slider_mid = round_to_step(max(slider_min, cohort_estimate), 5_000)
-        slider_max = max(
-            slider_max,
-            round_up_to_step(cohort_estimate * 1.2, 5_000),
-        )
+    if cohort.estimate:
+        slider_mid = round_to_step(max(slider_min, cohort.estimate), 5_000)
+        slider_max = max(slider_max, round_up_to_step(cohort.estimate * 1.2, 5_000))
         slider_mid = min(slider_max, slider_mid)
 
     slider_options = generate_cohort_slider_options(
@@ -115,10 +60,35 @@ def render_cohort_selector() -> CohortContext:
         max_val=slider_max,
     )
 
-    return CohortContext(
-        selection=cohort_selection,
-        distribution_rows=distribution_rows,
-        estimate=cohort_estimate,
-        slider_options=slider_options,
-        slider_mid=slider_mid,
+    return slider_options, slider_mid
+
+
+def render_scenario_cards(scenarios: Sequence[Dict[str, Any]]) -> None:
+    """Render static scenario cards summarising each cohort."""
+
+    if not scenarios:
+        return
+
+    cards_html: List[str] = []
+    for scenario in scenarios:
+        payout_text = scenario.get("payout_text", "")
+        tokens_text = scenario.get("tokens_text", "")
+        wallets_text = scenario.get("wallets_text", "")
+        band_text = scenario.get("band_text") or ""
+        cards_html.append(
+            f"""
+            <div class='cohort-card scenario-card'>
+                <span class='cohort-card-title'>{scenario['title']}</span>
+                <span class='cohort-card-year'>{scenario['subtitle']}</span>
+                <div class='scenario-card-metric'>{payout_text}</div>
+                <div class='scenario-card-submetric'>{tokens_text}</div>
+                <div class='scenario-card-foot'>{wallets_text}</div>
+                {f"<div class='scenario-card-foot subtle'>{band_text}</div>" if band_text else ''}
+            </div>
+            """
+        )
+
+    st.markdown(
+        "<div class='cohort-cards-row scenario-cards'>" + "".join(cards_html) + "</div>",
+        unsafe_allow_html=True,
     )

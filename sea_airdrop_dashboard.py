@@ -1,4 +1,6 @@
 import math
+from typing import Any, Dict
+
 import streamlit as st
 
 from app.config import (
@@ -6,15 +8,9 @@ from app.config import (
     TOTAL_SUPPLY,
     resolve_page_icon,
 )
-from app.state import (
-    bootstrap_session_state,
-    sync_cohort_selection_from_query,
-)
-from app.ui.layout import (
-    inject_global_styles,
-    render_header,
-)
-from app.ui.cohort import render_cohort_selector
+from app.state import bootstrap_session_state
+from app.ui.layout import inject_global_styles, render_header
+from app.ui.cohort import build_slider_defaults, load_cohort_data, render_scenario_cards
 from app.ui.inputs import render_input_panel
 from app.ui.wallet import render_wallet_section
 from app.ui.reveal import run_reveal_presentation
@@ -26,8 +22,6 @@ from app.calculations import (
     compute_scenario,
     determine_percentile_band,
     format_percentile_option,
-    generate_percentile_options,
-    snap_value_to_options,
 )
 
 
@@ -39,7 +33,6 @@ st.set_page_config(
 
 bootstrap_session_state()
 params = st.query_params
-sync_cohort_selection_from_query(params)
 
 wallet_values = params.get("wallet")
 if isinstance(wallet_values, (list, tuple)):
@@ -52,53 +45,26 @@ wallet_param = wallet_param.strip() if wallet_param else None
 render_header()
 inject_global_styles()
 
-previous_selection = st.session_state.get("cohort_selection_prev")
+cohort_data = load_cohort_data()
+if not cohort_data:
+    st.error("No cohort distributions found. Please update the data files and refresh.")
+    st.stop()
 
-cohort_context = render_cohort_selector()
-cohort_selection = cohort_context.selection
-distribution_rows = cohort_context.distribution_rows
-cohort_estimate = cohort_context.estimate
-
-if cohort_estimate:
-    st.caption(
-        f"{cohort_selection}: approximately {cohort_estimate:,} wallets qualify under this definition. "
-        "Use the cohort size slider below to focus on your own OG definition."
-    )
-
-if (
-    previous_selection is not None
-    and previous_selection != cohort_selection
-    and st.session_state.get("wallet_report")
-    and distribution_rows
-):
-    summary = st.session_state["wallet_report"].get("summary", {})
-    total_usd = float(summary.get("total_usd") or 0.0)
-    band_info = determine_percentile_band(
-        total_usd,
-        distribution_rows,
-        st.session_state.get("cohort_size", 100_000),
-    )
-    st.session_state["wallet_band"] = band_info
-    if band_info:
-        mid_percentile = (
-            band_info.get("start_percentile", 0.0) + band_info.get("end_percentile", 0.0)
-        ) / 2
-        percentile_options = generate_percentile_options()
-        snapped_percentile = snap_value_to_options(
-            float(max(0.1, min(100.0, mid_percentile))),
-            percentile_options,
-        )
-        st.session_state["tier_pct"] = snapped_percentile
-
-st.session_state["cohort_selection_prev"] = cohort_selection
+primary_name = next(iter(cohort_data))
+primary_cohort = cohort_data[primary_name]
+slider_options, slider_default = build_slider_defaults(primary_cohort)
+baseline_rows = primary_cohort.rows
 
 wallet_report, wallet_band = render_wallet_section(
-    distribution_rows=distribution_rows,
+    distribution_rows=baseline_rows,
     preset_wallet=wallet_param,
     auto_fetch=bool(wallet_param),
 )
 
-inputs_context = render_input_panel(cohort_context)
+inputs_context = render_input_panel(
+    slider_options=slider_options,
+    slider_default=slider_default,
+)
 
 og_pool_pct = inputs_context.og_pool_pct
 fdv_billion = inputs_context.fdv_billion
@@ -108,36 +74,114 @@ share_options = inputs_context.share_options
 fdv_sensitivity = inputs_context.fdv_sensitivity
 clicked = inputs_context.clicked
 
-total_supply = TOTAL_SUPPLY
+if not share_options:
+    share_options = [20, 30, 40]
+featured_share = share_options[0]
 
-if wallet_report and distribution_rows:
-    summary_snapshot = wallet_report.get("summary", {})
+total_supply = TOTAL_SUPPLY
+token_price = (fdv_billion * 1_000_000_000) / total_supply
+
+summary_snapshot: Dict[str, Any] = {}
+total_usd_snapshot = 0.0
+if wallet_report and baseline_rows:
+    summary_snapshot = wallet_report.get("summary", {}) or {}
     total_usd_snapshot = float(summary_snapshot.get("total_usd") or 0.0)
     recomputed_band = determine_percentile_band(
         total_usd_snapshot,
-        distribution_rows,
+        baseline_rows,
         cohort_size,
     )
     st.session_state["wallet_band"] = recomputed_band
     wallet_band = recomputed_band
 
+base_estimate = primary_cohort.estimate or slider_default or cohort_size or 1
+if base_estimate <= 0:
+    base_estimate = max(cohort_size, 1)
 
-reveal_duration = DEFAULT_REVEAL_DURATION
+scenario_cards = []
+primary_result = None
+primary_cohort_size = cohort_size
+primary_wallets_in_tier = max(1, math.floor(primary_cohort_size * (tier_pct / 100)))
+primary_full_label = primary_cohort.config.get("title", primary_name)
+timeline_label = primary_cohort.config.get("timeline_label")
+if timeline_label:
+    primary_full_label = f"{primary_full_label} · {timeline_label}"
 
+for name, data in cohort_data.items():
+    estimate = data.estimate or base_estimate
+    factor = estimate / base_estimate if base_estimate else 1.0
+    scenario_cohort_size = max(1, int(round(cohort_size * factor)))
+    scenario_result = compute_scenario(
+        total_supply=total_supply,
+        og_pool_pct=og_pool_pct,
+        fdv_billion=fdv_billion,
+        cohort_size=scenario_cohort_size,
+        tier_pct=tier_pct,
+        share_pct=featured_share,
+    )
+    wallets_in_tier_value = max(1, math.floor(scenario_cohort_size * (tier_pct / 100)))
 
-token_price = (fdv_billion * 1_000_000_000) / total_supply
-wallets_in_tier = max(1, math.floor(cohort_size * (tier_pct / 100)))
-og_pool_tokens = total_supply * (og_pool_pct / 100)
-featured_share = share_options[0]
+    band_text = ""
+    if wallet_report and data.rows:
+        band = determine_percentile_band(
+            total_usd_snapshot,
+            data.rows,
+            scenario_cohort_size,
+        )
+        if band:
+            start_pct = band.get("start_percentile")
+            end_pct = band.get("end_percentile")
+            if start_pct is not None and end_pct is not None:
+                band_text = f"Wallet percentile: {start_pct:.1f}% – {end_pct:.1f}%"
 
-selected_scenario = compute_scenario(
-    total_supply=total_supply,
-    og_pool_pct=og_pool_pct,
-    fdv_billion=fdv_billion,
-    cohort_size=cohort_size,
-    tier_pct=tier_pct,
-    share_pct=featured_share,
-)
+    title = data.config.get("title", name)
+    subtitle_bits = [data.config.get("timeline_label"), data.config.get("tagline")]
+    subtitle = " · ".join([bit for bit in subtitle_bits if bit])
+    if not subtitle:
+        subtitle = data.name
+    wallets_label = f"Wallets modelled: {scenario_cohort_size:,}"
+    if data.estimate:
+        wallets_label += f" (est. {data.estimate:,})"
+
+    full_label = title
+    timeline = data.config.get("timeline_label")
+    if timeline:
+        full_label = f"{full_label} · {timeline}"
+
+    scenario_cards.append(
+        {
+            "title": title,
+            "subtitle": subtitle,
+            "payout_text": f"≈ ${scenario_result.usd_value:,.0f}",
+            "tokens_text": f"Ξ{scenario_result.tokens_per_wallet:,.0f} per wallet · {featured_share:.0f}% share",
+            "wallets_text": wallets_label,
+            "band_text": band_text,
+            "is_primary": name == primary_name,
+            "cohort_size": scenario_cohort_size,
+            "usd_value": scenario_result.usd_value,
+            "tokens_value": scenario_result.tokens_per_wallet,
+            "full_label": full_label,
+        }
+    )
+
+    if name == primary_name:
+        primary_result = scenario_result
+        primary_cohort_size = scenario_cohort_size
+        primary_wallets_in_tier = wallets_in_tier_value
+        if full_label:
+            primary_full_label = full_label
+
+if primary_result is None:
+    primary_result = compute_scenario(
+        total_supply=total_supply,
+        og_pool_pct=og_pool_pct,
+        fdv_billion=fdv_billion,
+        cohort_size=cohort_size,
+        tier_pct=tier_pct,
+        share_pct=featured_share,
+    )
+    primary_cohort_size = cohort_size
+    primary_wallets_in_tier = max(1, math.floor(primary_cohort_size * (tier_pct / 100)))
 
 steps_for_reveal = [
     (
@@ -146,19 +190,19 @@ steps_for_reveal = [
     ),
     (
         "OG pool allocation",
-        f"{og_pool_pct}% of supply reserved for OGs → {og_pool_tokens:,.0f} SEA available to distribute",
+        f"{og_pool_pct}% of supply reserved for OGs → {total_supply * (og_pool_pct / 100):,.0f} SEA available to distribute",
     ),
     (
         "Tier sizing",
-        f"{format_percentile_option(tier_pct)} equates to roughly {wallets_in_tier:,} wallets competing",
+        f"{format_percentile_option(tier_pct)} equates to roughly {primary_wallets_in_tier:,} wallets competing",
     ),
     (
         "Tier share assumption",
-        f"Using a {featured_share}% slice of the OG pool for your tier gives {selected_scenario.tokens_per_wallet:,.0f} SEA each",
+        f"Using a {featured_share}% slice of the OG pool for your tier gives {primary_result.tokens_per_wallet:,.0f} SEA each",
     ),
     (
         "Estimated payout",
-        f"At ${token_price:,.2f}/SEA that works out to ≈ ${selected_scenario.usd_value:,.0f}",
+        f"At ${token_price:,.2f}/SEA that works out to ≈ ${primary_result.usd_value:,.0f}",
     ),
 ]
 
@@ -182,8 +226,8 @@ heatmap_df = build_heatmap_data(
 
 scenario_snapshot = ScenarioSnapshot(
     token_price=token_price,
-    wallets_in_tier=wallets_in_tier,
-    og_pool_tokens=og_pool_tokens,
+    wallets_in_tier=primary_wallets_in_tier,
+    og_pool_tokens=total_supply * (og_pool_pct / 100),
     featured_share=featured_share,
     tier_pct=tier_pct,
     selected_df=share_table,
@@ -200,6 +244,8 @@ current_signature = (
     tuple(fdv_sensitivity),
 )
 
+reveal_duration = DEFAULT_REVEAL_DURATION
+
 if clicked:
     run_reveal_presentation(steps_for_reveal, reveal_duration)
     st.session_state.has_revealed_once = True
@@ -213,20 +259,29 @@ if st.session_state.has_revealed_once:
 
     render_results(
         scenario_snapshot=scenario_snapshot,
-        selected_scenario=selected_scenario,
+        selected_scenario=primary_result,
         reveal_signature=current_signature,
     )
 
+    render_scenario_cards(scenario_cards)
+
+    primary_card = next((card for card in scenario_cards if card.get("is_primary")), None)
+    primary_label = primary_full_label
+    primary_cohort_wallets = primary_cohort_size
+    if primary_card:
+        primary_label = primary_card.get("full_label", primary_label)
+        primary_cohort_wallets = primary_card.get("cohort_size", primary_cohort_size)
+
     render_share_panel(
         current_signature=current_signature,
-        cohort_name=cohort_selection,
-        cohort_estimate=cohort_estimate,
+        cohort_label=primary_label,
+        cohort_wallets=primary_cohort_wallets,
         og_pool_pct=og_pool_pct,
         fdv_billion=fdv_billion,
         tier_pct=tier_pct,
         featured_share=featured_share,
         token_price=token_price,
-        scenario_usd=selected_scenario.usd_value,
-        scenario_tokens=selected_scenario.tokens_per_wallet,
+        scenario_usd=primary_result.usd_value,
+        scenario_tokens=primary_result.tokens_per_wallet,
         wallet_report=wallet_report,
     )

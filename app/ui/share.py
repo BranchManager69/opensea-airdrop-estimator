@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Tuple
+
 import streamlit as st
 
 from app.calculations import format_percentile_option
-from app.config import COHORT_CONFIG
 from app.share_service import ShareServiceError, create_share_card
 
 ShareCardKey = Tuple[Any, ...]
@@ -24,8 +24,8 @@ def _format_wallet(address: str | None) -> str:
 def render_share_panel(
     *,
     current_signature: ShareCardKey,
-    cohort_name: str,
-    cohort_estimate: int,
+    cohort_label: str,
+    cohort_wallets: int,
     og_pool_pct: float,
     fdv_billion: float,
     tier_pct: float,
@@ -63,12 +63,6 @@ def render_share_panel(
     total_usd = float(summary.get("total_usd") or 0.0)
     last_trade = summary.get("last_trade") or summary.get("last_activity")
 
-    cohort_conf = COHORT_CONFIG.get(cohort_name, {})
-    cohort_label = cohort_conf.get("title", cohort_name)
-    timeline_label = cohort_conf.get("timeline_label")
-    if timeline_label:
-        cohort_label = f"{cohort_label} · {timeline_label}"
-
     percentile_label = format_percentile_option(tier_pct)
 
     with st.container():
@@ -78,7 +72,10 @@ def render_share_panel(
                 f"**Wallet**: {_format_wallet(wallet_address)}  \
 **Volume**: {total_eth:,.2f} ETH ({total_usd:,.0f} USD)"
             )
-            st.markdown(f"**Cohort**: {cohort_label}")
+            cohort_context_text = cohort_label
+            if cohort_wallets:
+                cohort_context_text += f" · {cohort_wallets:,} wallets"
+            st.markdown(f"**Cohort**: {cohort_context_text}")
             st.markdown(f"**Tier**: {percentile_label} · {featured_share:.0f}% OG pool")
 
             if existing_card:
@@ -102,7 +99,7 @@ def render_share_panel(
                         "payoutTokens": float(scenario_tokens),
                         "tokenPrice": float(token_price),
                         "cohortLabel": cohort_label,
-                        "cohortWallets": int(cohort_estimate or 0),
+                        "cohortWallets": int(cohort_wallets or 0),
                         "percentileLabel": percentile_label,
                         "sharePct": float(featured_share),
                         "fdvBillion": float(fdv_billion),

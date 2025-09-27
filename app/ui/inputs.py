@@ -12,7 +12,6 @@ from app.calculations import (
     generate_percentile_options,
     snap_value_to_options,
 )
-from app.ui.cohort import CohortContext
 
 
 @dataclass
@@ -26,7 +25,7 @@ class InputsContext:
     clicked: bool
 
 
-def render_input_panel(cohort_context: CohortContext) -> InputsContext:
+def render_input_panel(*, slider_options: List[int], slider_default: int) -> InputsContext:
     """Render sliders, scenario toggles, and the call-to-action button."""
 
     clicked = False
@@ -40,12 +39,6 @@ def render_input_panel(cohort_context: CohortContext) -> InputsContext:
                 use_container_width=True,
                 disabled=st.session_state.has_revealed_once,
             )
-
-    distribution_rows = cohort_context.distribution_rows
-    cohort_selection = cohort_context.selection
-    cohort_estimate = cohort_context.estimate
-    slider_options = cohort_context.slider_options
-    slider_mid = cohort_context.slider_mid
 
     with st.container():
         top_row = st.columns(4)
@@ -78,17 +71,10 @@ def render_input_panel(cohort_context: CohortContext) -> InputsContext:
         with top_row[2]:
             st.markdown("**OG cohort size (wallets)**")
             st.caption("Estimated wallets eligible for OG rewards.")
-            if (
-                distribution_rows
-                and st.session_state.get("cohort_size_origin") != cohort_selection
-            ):
-                default_target = snap_value_to_options(
-                    float(cohort_estimate or slider_mid),
-                    slider_options,
-                )
-                st.session_state["cohort_size"] = int(default_target)
-                st.session_state["cohort_size_origin"] = cohort_selection
-            current_value = st.session_state.get("cohort_size", slider_options[len(slider_options) // 2])
+            if "cohort_size" not in st.session_state:
+                snapped_default = snap_value_to_options(float(slider_default), slider_options)
+                st.session_state["cohort_size"] = int(snapped_default)
+            current_value = st.session_state["cohort_size"]
             if current_value not in slider_options:
                 nearest = min(slider_options, key=lambda opt: abs(opt - current_value))
                 st.session_state["cohort_size"] = nearest
@@ -98,6 +84,7 @@ def render_input_panel(cohort_context: CohortContext) -> InputsContext:
                 options=slider_options,
                 format_func=lambda val: f"{val:,}",
                 label_visibility="collapsed",
+                value=current_value,
                 key="cohort_size",
             )
 

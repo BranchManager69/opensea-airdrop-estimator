@@ -224,6 +224,29 @@ div[data-testid="stButton"] button[kind="primary"] {
         padding: 0.85rem 1rem;
         margin-top: 0.6rem;
     }
+    .scenario-cards .cohort-card {
+        background: rgba(245, 248, 255, 0.96);
+        border-color: rgba(32, 129, 226, 0.12);
+        box-shadow: 0 12px 28px rgba(4, 17, 29, 0.12);
+    }
+    .scenario-card-metric {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #04111d;
+    }
+    .scenario-card-submetric {
+        font-size: 1rem;
+        color: #1868B7;
+        font-weight: 600;
+    }
+    .scenario-card-foot {
+        font-size: 0.95rem;
+        color: #353840;
+    }
+    .scenario-card-foot.subtle {
+        color: #6b7280;
+        font-size: 0.85rem;
+    }
         </style>
         """,
         unsafe_allow_html=True,
