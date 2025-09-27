@@ -142,27 +142,27 @@ def render_wallet_section(
         platform_fee_usd = float(summary.get("platform_fee_usd") or 0.0)
         royalty_fee_usd = float(summary.get("royalty_fee_usd") or 0.0)
 
-        if wallet_band:
-            cohort_selected = st.session_state.get("cohort_size", 100_000)
-            start_pct = wallet_band.get("start_percentile", 0.0)
-            end_pct = wallet_band.get("end_percentile", 0.0)
-            band_entry = wallet_band.get("bucket_data", {})
-            min_band_usd = float(band_entry.get("min_total_usd") or 0.0)
-            max_band_usd = float(band_entry.get("max_total_usd") or min_band_usd)
-            st.info(
-                f"Based on total USD volume, this wallet sits between the top {start_pct:.1f}% and "
-                f"{end_pct:.1f}% of the {cohort_selected:,} wallets you’ve defined as the OG cohort. "
-                "Adjust the sliders below to explore alternative assumptions."
-            )
-            with st.expander("Percentile band details", expanded=False):
-                st.write(
-                    f"Band volume range: ${min_band_usd:,.0f} – ${max_band_usd:,.0f} USD"
-                )
-        else:
-            st.warning(
-                "Wallet volume falls below your current OG cohort selection. Increase the cohort size or "
-                "adjust your definition to include lower-volume wallets."
-            )
+        bands_summary = st.session_state.get("scenario_bands") or {}
+        if bands_summary:
+            st.markdown("**Percentile placement across cohorts**")
+            bullet_lines = []
+            for info in bands_summary.values():
+                label = info.get("label") or "Unnamed cohort"
+                start_pct = info.get("start")
+                end_pct = info.get("end")
+                cohort_sz = info.get("cohort_size")
+                if start_pct is not None and end_pct is not None:
+                    cohort_text = f" of {cohort_sz:,} wallets" if cohort_sz else ""
+                    bullet_lines.append(
+                        f"- **{label}** · top {start_pct:.1f}% – {end_pct:.1f}%{cohort_text}"
+                    )
+                else:
+                    bullet_lines.append(
+                        f"- **{label}** · below the modeled volume range"
+                    )
+            st.markdown("\n".join(bullet_lines))
+        elif wallet_report and wallet_report.get("summary"):
+            st.info("Run the estimate above to map percentile placement across cohorts.")
 
         fee_rows = []
         if platform_fee_eth or platform_fee_usd:

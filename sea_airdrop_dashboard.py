@@ -1,6 +1,8 @@
 import math
-from typing import Any, Dict
+from typing import Any, Dict, List
 
+import altair as alt
+import pandas as pd
 import streamlit as st
 
 from app.config import (
@@ -99,6 +101,8 @@ if base_estimate <= 0:
     base_estimate = max(cohort_size, 1)
 
 scenario_cards = []
+scenario_bands: Dict[str, Dict[str, Any]] = {}
+curve_rows: List[Dict[str, float]] = []
 primary_result = None
 primary_cohort_size = cohort_size
 primary_wallets_in_tier = max(1, math.floor(primary_cohort_size * (tier_pct / 100)))
@@ -122,6 +126,9 @@ for name, data in cohort_data.items():
     wallets_in_tier_value = max(1, math.floor(scenario_cohort_size * (tier_pct / 100)))
 
     band_text = ""
+    start_pct = None
+    end_pct = None
+    band_mid = None
     if wallet_report and data.rows:
         band = determine_percentile_band(
             total_usd_snapshot,
@@ -133,6 +140,7 @@ for name, data in cohort_data.items():
             end_pct = band.get("end_percentile")
             if start_pct is not None and end_pct is not None:
                 band_text = f"Wallet percentile: {start_pct:.1f}% – {end_pct:.1f}%"
+                band_mid = (start_pct + end_pct) / 2
 
     title = data.config.get("title", name)
     subtitle_bits = [data.config.get("timeline_label"), data.config.get("tagline")]
@@ -147,6 +155,45 @@ for name, data in cohort_data.items():
     timeline = data.config.get("timeline_label")
     if timeline:
         full_label = f"{full_label} · {timeline}"
+
+    scenario_bands[name] = {
+        "label": full_label,
+        "start": start_pct,
+        "end": end_pct,
+        "mid": band_mid,
+        "cohort_size": scenario_cohort_size,
+    }
+
+    for row in data.rows:
+        percentile = row.get("usd_percentile_rank")
+        if percentile is None:
+            continue
+        try:
+            percentile_val = float(percentile)
+        except (TypeError, ValueError):
+            continue
+        min_usd = row.get("min_total_usd")
+        max_usd = row.get("max_total_usd")
+        try:
+            min_usd_val = float(min_usd) if min_usd is not None else 0.0
+        except (TypeError, ValueError):
+            min_usd_val = 0.0
+        try:
+            max_usd_val = float(max_usd) if max_usd is not None else min_usd_val
+        except (TypeError, ValueError):
+            max_usd_val = min_usd_val
+        usd_value = max(min_usd_val, max_usd_val)
+        if usd_value <= 0 or percentile_val <= 0:
+            continue
+        curve_rows.append(
+            {
+                "scenario": full_label,
+                "percentile": percentile_val,
+                "usd": usd_value,
+                "min_usd": min_usd_val,
+                "max_usd": max_usd_val,
+            }
+        )
 
     scenario_cards.append(
         {
@@ -182,6 +229,9 @@ if primary_result is None:
     )
     primary_cohort_size = cohort_size
     primary_wallets_in_tier = max(1, math.floor(primary_cohort_size * (tier_pct / 100)))
+
+st.session_state["scenario_bands"] = scenario_bands
+st.session_state["scenario_curves"] = curve_rows
 
 steps_for_reveal = [
     (
@@ -264,6 +314,69 @@ if st.session_state.has_revealed_once:
     )
 
     render_scenario_cards(scenario_cards)
+
+    curve_rows_state = st.session_state.get("scenario_curves", [])
+    if curve_rows_state:
+        curve_df = pd.DataFrame(curve_rows_state)
+        curve_df = curve_df.dropna(subset=["percentile", "usd"])
+        if not curve_df.empty:
+            st.markdown("**Percentile positioning across cohorts**")
+            curve_chart = (
+                alt.Chart(curve_df)
+                .mark_line()
+                .encode(
+                    x=alt.X("percentile:Q", title="Percentile (lower = more OG)"),
+                    y=alt.Y(
+                        "usd:Q",
+                        title="Total USD volume",
+                        scale=alt.Scale(type="log", domainMin=1),
+                    ),
+                    color=alt.Color("scenario:N", title="Cohort"),
+                    tooltip=[
+                        alt.Tooltip("scenario:N", title="Cohort"),
+                        alt.Tooltip("percentile:Q", title="Percentile", format=".1f"),
+                        alt.Tooltip("usd:Q", title="USD volume", format=",.0f"),
+                        alt.Tooltip("min_usd:Q", title="Min USD", format=",.0f"),
+                        alt.Tooltip("max_usd:Q", title="Max USD", format=",.0f"),
+                    ],
+                )
+                .properties(height=320)
+            )
+
+            point_rows: List[Dict[str, float]] = []
+            scenario_band_info = st.session_state.get("scenario_bands", {})
+            if total_usd_snapshot > 0:
+                for info in scenario_band_info.values():
+                    mid_pct = info.get("mid")
+                    label = info.get("label")
+                    if mid_pct is not None and label:
+                        point_rows.append(
+                            {
+                                "scenario": label,
+                                "percentile": mid_pct,
+                                "usd": total_usd_snapshot,
+                            }
+                        )
+
+            if point_rows:
+                point_df = pd.DataFrame(point_rows)
+                point_chart = (
+                    alt.Chart(point_df)
+                    .mark_point(size=130, filled=True)
+                    .encode(
+                        x="percentile:Q",
+                        y="usd:Q",
+                        color=alt.Color("scenario:N", title="Cohort"),
+                        tooltip=[
+                            alt.Tooltip("scenario:N", title="Cohort"),
+                            alt.Tooltip("percentile:Q", title="Wallet percentile", format=".1f"),
+                            alt.Tooltip("usd:Q", title="Wallet volume", format=",.0f"),
+                        ],
+                    )
+                )
+                curve_chart = curve_chart + point_chart
+
+            st.altair_chart(curve_chart, use_container_width=True)
 
     primary_card = next((card for card in scenario_cards if card.get("is_primary")), None)
     primary_label = primary_full_label
