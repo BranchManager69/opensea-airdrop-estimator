@@ -74,7 +74,6 @@ def render_input_panel(*, slider_options: List[int], slider_default: int) -> Inp
                 options=slider_options,
                 format_func=lambda val: f"{val:,}",
                 label_visibility="collapsed",
-                value=current_value,
                 key="cohort_size",
             )
 
