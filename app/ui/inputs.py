@@ -26,10 +26,13 @@ class InputsContext:
 def render_input_panel() -> InputsContext:
     """Render sliders, scenario toggles, and the call-to-action button."""
 
-    with st.expander("Launch dynamics", expanded=True):
+    st.markdown("### Tune your assumptions")
+    st.caption("Adjust anything you like—otherwise we’ll roll with these defaults when you generate your reveal.")
+
+    with st.expander("Launch dynamics", expanded=False):
+        st.caption("How big is the OG pool and what’s the launch valuation?")
         launch_cols = st.columns(2)
         with launch_cols[0]:
-            st.caption("Share of total supply earmarked for the OG crowd.")
             og_pool_pct = st.slider(
                 "OG/community allocation (%)",
                 min_value=10,
@@ -38,7 +41,6 @@ def render_input_panel() -> InputsContext:
                 key="og_pool_pct",
             )
         with launch_cols[1]:
-            st.caption("Fully diluted valuation at token generation event.")
             fdv_billion = float(
                 st.select_slider(
                     "Launch FDV ($B)",
@@ -48,7 +50,7 @@ def render_input_panel() -> InputsContext:
                 )
             )
 
-    with st.expander("Personal positioning", expanded=True):
+    with st.expander("Personal positioning", expanded=False):
         percentile_options = generate_percentile_options()
         auto_source = st.session_state.get("tier_pct_source", {})
         auto_value = auto_source.get("value")
@@ -97,10 +99,10 @@ def render_input_panel() -> InputsContext:
             )
 
         if not from_wallet or manual_override:
-            st.session_state["tier_pct_source"] = {
-                "value": tier_pct,
-                "from_wallet": False,
-            }
+                st.session_state["tier_pct_source"] = {
+                    "value": tier_pct,
+                    "from_wallet": False,
+                }
 
     with st.expander("Token math", expanded=False):
         scenario_cols = st.columns(2)
@@ -127,15 +129,19 @@ def render_input_panel() -> InputsContext:
                 fdv_sensitivity.append(fdv_billion)
                 fdv_sensitivity = sorted(set(fdv_sensitivity))
 
+    summary_cols = st.columns(3)
+    summary_cols[0].metric("OG allocation", f"{og_pool_pct}%")
+    summary_cols[1].metric("Launch FDV", f"${fdv_billion:.0f}B")
+    summary_cols[2].metric("Percentile", format_percentile_option(tier_pct))
+
     with st.container():
         left_spacer, button_area, right_spacer = st.columns([3, 2, 3])
         with button_area:
             clicked = st.button(
-                "Estimate my airdrop",
+                "Generate my Sea Mom projection",
                 key="estimate_cta",
                 type="primary",
                 use_container_width=True,
-                disabled=st.session_state.has_revealed_once,
             )
 
     return InputsContext(

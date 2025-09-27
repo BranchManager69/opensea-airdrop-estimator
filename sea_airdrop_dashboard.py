@@ -194,74 +194,6 @@ def main() -> None:
             reveal_signature=current_signature,
         )
 
-        render_scenario_cards(
-            scenario_cards,
-            slider_options=slider_options,
-        )
-
-        curve_rows_state = st.session_state.get("scenario_curves", [])
-        if curve_rows_state:
-            curve_df = pd.DataFrame(curve_rows_state)
-            curve_df = curve_df.dropna(subset=["percentile", "usd"])
-            if not curve_df.empty:
-                st.markdown("**Percentile positioning across cohorts**")
-                curve_chart = (
-                    alt.Chart(curve_df)
-                    .mark_line()
-                    .encode(
-                        x=alt.X("percentile:Q", title="Percentile (lower = more OG)"),
-                        y=alt.Y(
-                            "usd:Q",
-                            title="Total USD volume",
-                            scale=alt.Scale(type="log", domainMin=1),
-                        ),
-                        color=alt.Color("scenario:N", title="Cohort"),
-                        tooltip=[
-                            alt.Tooltip("scenario:N", title="Cohort"),
-                            alt.Tooltip("percentile:Q", title="Percentile", format=".1f"),
-                            alt.Tooltip("usd:Q", title="USD volume", format=",.0f"),
-                            alt.Tooltip("min_usd:Q", title="Min USD", format=",.0f"),
-                            alt.Tooltip("max_usd:Q", title="Max USD", format=",.0f"),
-                        ],
-                    )
-                    .properties(height=320)
-                )
-
-                point_rows: List[Dict[str, float]] = []
-                scenario_band_info = st.session_state.get("scenario_bands", {})
-                if total_usd_snapshot > 0:
-                    for info in scenario_band_info.values():
-                        mid_pct = info.get("mid")
-                        label = info.get("label")
-                        if mid_pct is not None and label:
-                            point_rows.append(
-                                {
-                                    "scenario": label,
-                                    "percentile": mid_pct,
-                                    "usd": total_usd_snapshot,
-                                }
-                            )
-
-                if point_rows:
-                    point_df = pd.DataFrame(point_rows)
-                    point_chart = (
-                        alt.Chart(point_df)
-                        .mark_point(size=130, filled=True)
-                        .encode(
-                            x="percentile:Q",
-                            y="usd:Q",
-                            color=alt.Color("scenario:N", title="Cohort"),
-                            tooltip=[
-                                alt.Tooltip("scenario:N", title="Cohort"),
-                                alt.Tooltip("percentile:Q", title="Wallet percentile", format=".1f"),
-                                alt.Tooltip("usd:Q", title="Wallet volume", format=",.0f"),
-                            ],
-                        )
-                    )
-                    curve_chart = curve_chart + point_chart
-
-                st.altair_chart(curve_chart, use_container_width=True)
-
         share_panel = st.container()
         with share_panel:
             render_share_panel(
@@ -279,6 +211,78 @@ def main() -> None:
                 precomputed_card=prefetch_result.card,
                 payload=prefetch_result.payload,
             )
+
+        with st.expander("Wallet breakdown", expanded=False):
+            render_wallet_breakdown(wallet_report, wallet_band)
+
+        with st.expander("Scenario comparisons", expanded=True):
+            render_scenario_cards(
+                scenario_cards,
+                slider_options=slider_options,
+            )
+
+            curve_rows_state = st.session_state.get("scenario_curves", [])
+            if curve_rows_state:
+                curve_df = pd.DataFrame(curve_rows_state)
+                curve_df = curve_df.dropna(subset=["percentile", "usd"])
+                if not curve_df.empty:
+                    st.markdown("**Percentile positioning across cohorts**")
+                    curve_chart = (
+                        alt.Chart(curve_df)
+                        .mark_line()
+                        .encode(
+                            x=alt.X("percentile:Q", title="Percentile (lower = more OG)"),
+                            y=alt.Y(
+                                "usd:Q",
+                                title="Total USD volume",
+                                scale=alt.Scale(type="log", domainMin=1),
+                            ),
+                            color=alt.Color("scenario:N", title="Cohort"),
+                            tooltip=[
+                                alt.Tooltip("scenario:N", title="Cohort"),
+                                alt.Tooltip("percentile:Q", title="Percentile", format=".1f"),
+                                alt.Tooltip("usd:Q", title="USD volume", format=",.0f"),
+                                alt.Tooltip("min_usd:Q", title="Min USD", format=",.0f"),
+                                alt.Tooltip("max_usd:Q", title="Max USD", format=",.0f"),
+                            ],
+                        )
+                        .properties(height=320)
+                    )
+
+                    point_rows: List[Dict[str, float]] = []
+                    scenario_band_info = st.session_state.get("scenario_bands", {})
+                    if total_usd_snapshot > 0:
+                        for info in scenario_band_info.values():
+                            mid_pct = info.get("mid")
+                            label = info.get("label")
+                            if mid_pct is not None and label:
+                                point_rows.append(
+                                    {
+                                        "scenario": label,
+                                        "percentile": mid_pct,
+                                        "usd": total_usd_snapshot,
+                                    }
+                                )
+
+                    if point_rows:
+                        point_df = pd.DataFrame(point_rows)
+                        point_chart = (
+                            alt.Chart(point_df)
+                            .mark_point(size=130, filled=True)
+                            .encode(
+                                x="percentile:Q",
+                                y="usd:Q",
+                                color=alt.Color("scenario:N", title="Cohort"),
+                                tooltip=[
+                                    alt.Tooltip("scenario:N", title="Cohort"),
+                                    alt.Tooltip("percentile:Q", title="Wallet percentile", format=".1f"),
+                                    alt.Tooltip("usd:Q", title="Wallet volume", format=",.0f"),
+                                ],
+                            )
+                        )
+                        curve_chart = curve_chart + point_chart
+
+                    st.altair_chart(curve_chart, use_container_width=True)
 
 
 if __name__ == "__main__":
