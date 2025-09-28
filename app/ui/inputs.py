@@ -38,9 +38,8 @@ def render_input_panel() -> InputsContext:
         st.caption("What will SEA's fully diluted valuation be at launch?")
     with valuation_cols[1]:
         fdv_options = [2, 3, 4, 5, 6, 7]
-        fdv_range = f"${min(fdv_options)}B – ${max(fdv_options)}B"
         st.markdown(
-            f"<div class='slider-header'><span>Launch FDV ($B)</span><span class='range'>{fdv_range}</span></div>",
+            "<div class='slider-header'><span>Launch FDV ($B)</span></div>",
             unsafe_allow_html=True,
         )
         fdv_billion = float(
@@ -59,7 +58,7 @@ def render_input_panel() -> InputsContext:
         st.caption("How much SEA will be reserved for OG users?")
     with og_cols[1]:
         st.markdown(
-            "<div class='slider-header'><span>OG/community allocation (%)</span><span class='range'>10% – 25%</span></div>",
+            "<div class='slider-header'><span>OG/community allocation (%)</span></div>",
             unsafe_allow_html=True,
         )
         og_pool_pct = st.slider(
@@ -137,11 +136,8 @@ def render_input_panel() -> InputsContext:
 
         percentile_min = min(percentile_options)
         percentile_max = max(percentile_options)
-        pct_range = (
-            f"{format_percentile_option(percentile_min)} – {format_percentile_option(percentile_max)}"
-        )
         st.markdown(
-            f"<div class='slider-header'><span>Your percentile band (%)</span><span class='range'>{pct_range}</span></div>",
+            "<div class='slider-header'><span>Your percentile band (%)</span></div>",
             unsafe_allow_html=True,
         )
         tier_pct = st.select_slider(
